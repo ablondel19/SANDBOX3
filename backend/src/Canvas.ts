@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
 import io from 'socket.io-client';
-import { Socket } from 'socket.io';
+import { Socket, Server } from 'socket.io';
 
 let canvas: any;
-let running = false;
 let context: any;
+
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
 class Player
 {
@@ -17,6 +18,9 @@ class Player
     min: number;
     max: number;
     speed: number;
+    name: string;
+    moveUp:boolean;
+    moveDown:boolean
     constructor(x: number, y: number, width: number, height: number, color: string, score: number, min: number, max: number, speed: number)
     {
         this.x = x;
@@ -28,6 +32,8 @@ class Player
         this.min = min;
         this.max = max;
         this.speed = speed;
+        this.moveDown = false;
+        this.moveUp = false;
     }
     PaddleUp()
     {
@@ -38,6 +44,9 @@ class Player
     {
         if (this.y + this.speed + this.height <= this.max + 20)
             this.y += this.speed;
+    }
+    RandomColor() {
+        this.color = '#'+ Math.floor(Math.random() * 16777215).toString(16);
     }
 }
 
@@ -50,6 +59,7 @@ class Ball
     velocityX: number;
     velocityY: number;
     color: string;
+    custom = false;
     constructor(x: number, y: number, radius: number, speed: number, velocityX: number, velocityY: number, color: string)
     {
         this.x = x / 2;
@@ -60,69 +70,114 @@ class Ball
         this.velocityY = velocityY;
         this.color = color;
     }
+    RandomColor() {
+        this.color = '#'+ Math.floor(Math.random() * 16777215).toString(16);
+    }
 }
 
 export class gameInfo {
     Balling: Ball;
     Player1: Player;
     Player2: Player;
-    Connected : [string, string];
+    Connected : string [];
+    Running: boolean;
     CDimension: { width: number; height: number };
+
     constructor(widths: number, heights: number) {
-        this.Connected = ["", ""];
+        this.Running = false;
+        this.Connected = []
         this.CDimension = { width: widths, height: heights };
         this.Balling = new Ball(widths, heights, 10, 10, 5, 0, 'red');
         this.Player1 = new Player(0, 500, 20, 100, '#1542d3', 0, 0, heights, 10);
         this.Player2 = new Player(widths - 20, (heights / 2), 20, 100, '#05f315', 0, 0, heights, 10);
+
     }
     CheckMove(id: string){
-        console.log(this.Connected);
-        if (this.Connected[0] === "")
-            this.Connected[0] = id;
-        if (this.Connected[0] === id)
+        console.log(this);
+        if (this.Player1.name === id)
+        {
+            console.log("Player 1 :", id);
             return this.Player1;
-        if (this.Connected[1] === "")
-            this.Connected[1] = id;
-        if (this.Connected[1] === id)
+        }
+        else if (this.Player2.name === id)
+        { 
+            console.log("Player 2 :", id);
             return this.Player2;
-        if (this.Connected[0] !== id && this.Connected[1] !== id)
-            throw new Error("Too many players");
-        else
-            return this.Player1;
+        }
+    }
+    MoveHandler(){
+        if (this.Player1.moveUp === true)
+            this.Player1.PaddleUp();
+        if (this.Player1.moveDown === true)
+            this.Player1.PaddleDown();
+        if (this.Player2.moveUp === true)
+            this.Player2.PaddleUp();
+        if (this.Player2.moveDown === true)
+            this.Player2.PaddleDown();
+    }
+    setMove(id: string, move: string, state: boolean){
+        if (move === "UP") {
+            if (this.Player1.name === id)
+                this.Player1.moveUp = state;
+            else if (this.Player2.name === id)
+                this.Player2.moveUp = state;
+        }
+        else if (move === "DOWN") {
+            if (this.Player1.name === id)
+                this.Player1.moveDown = state;
+            else if (this.Player2.name === id)
+                this.Player2.moveDown = state;
+        }
     }
 }
+
 
 export class Gaming {
     i = 0;
     intID: any;
     Info: gameInfo;
+    Room: Server;
 
-    constructor(width: number, height: number) {
+    constructor(width: number, height: number, ) {
         this.Info = new gameInfo(width, height);
-        this.intID = -1;
+        this.Room = new Server();
     }
-
+    setRoom(Room: Server) {
+        this.Room = Room;
+    }
     getInfo(): gameInfo {
         return this.Info;
     }
-
     rendering(Client:Socket) {
+        console.log(this.Info.Connected.length);
+        console.log("Rendering...");
+        if (this.Info.Running === true)
 
-        if (running)
-            return;
-        if (this.Info.Connected[0] !== "" && this.Info.Connected[1] !== "")
+        return;
+        if (this.Info.Connected.length === 2)
         {
-            running = true;
+            this.Info.Running = true;
             this.intID = setInterval(() => {
                 this.UpdateBall();
             }, 1000 / 60);
         }
-        else if (this.intID !== -1){
-            clearInterval(this.intID);
-            running = false;
-        }
         else
             return this.intID = -1;
+    }
+    Disconnect(id: string) {
+        const index = this.getInfo().Connected.indexOf(id);
+        if (this.getInfo().Running === false) {
+
+            if (index > -1) {
+                this.getInfo().Connected.splice(index, 1);
+            }
+            return "CONTINUE";
+        }
+        else if (index > -1) {
+            this.getInfo().Running = false;
+                return "STOP";
+        }
+        return "CONTINUE";
     }
     collision(b: any, p: any) {
         b.top = this.Info.Balling.y - this.Info.Balling.radius;
@@ -138,6 +193,14 @@ export class Gaming {
     }
 
     public UpdateBall() {
+        if (this.Info.Connected.length < 2){
+            clearInterval(this.intID);
+            this.Info.Running = false;
+            console.log("Game Stopped");
+            return;
+        }
+        this.Room.to('0').emit('Ping', this.Info);
+        this.Info.MoveHandler();
         this.Info.Balling.x += this.Info.Balling.velocityX;
         this.Info.Balling.y += this.Info.Balling.velocityY;
         if (this.Info.Balling.x - this.Info.Balling.radius < 0) {
@@ -156,6 +219,10 @@ export class Gaming {
         if (player === 'u1' && this.collision(this.Info.Balling, this.Info.Player1))
         {
             console.log('u1');
+            if (this.getInfo().Balling.custom === true) {
+                this.getInfo().Balling.RandomColor();
+                this.getInfo().Player1.RandomColor();
+            }
             let colPoint: number = this.Info.Balling.y - (this.Info.Player1.y + this.Info.Player1.height / 2);
             colPoint = colPoint / (this.Info.Player1.height / 2);
             const angleRad: number = (colPoint * Math.PI) / 4;
@@ -169,6 +236,10 @@ export class Gaming {
         else if (player === 'u2' && this.collision(this.Info.Balling, this.Info.Player2))
         {
             console.log('u2');
+            if (this.getInfo().Balling.custom === true) {
+                this.getInfo().Balling.RandomColor();
+                this.getInfo().Player2.RandomColor();
+            }
             let colPoint: number = this.Info.Balling.y - (this.Info.Player2.y + this.Info.Player2.height / 2);
             colPoint = colPoint / (this.Info.Player2.height / 2);
             const angleRad: number = (colPoint * Math.PI) / 4;
@@ -183,7 +254,6 @@ export class Gaming {
     }
 
     ReplaceBall(i: number) {
-        //console.log('fdp');
         this.Info.Balling.x = this.Info.CDimension.width / 2;
         this.Info.Balling.y = this.Info.CDimension.height / 2;
 

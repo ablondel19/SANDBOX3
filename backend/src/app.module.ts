@@ -6,7 +6,13 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configValidationSchema } from './app.schemas';
 import { AuthenticationModule } from './authentication/authentication.module';
-import { GameGateway } from './game/game.gateway';
+import { GameGateway} from "./game/game.gateway";
+import {JwtService} from "@nestjs/jwt";
+import {AuthenticationService} from "./authentication/authentication.service";
+import {UsersService} from "./users/users.service";
+import {JwtStrategy} from "./authentication/jwt.strategy";
+import { GameModule} from "./game/game.module";
+
 
 @Module({
   imports: [
@@ -18,6 +24,8 @@ import { GameGateway } from './game/game.gateway';
         }),
         UsersModule,
         AuthenticationModule,
+        GameModule,
+
       ],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
@@ -35,6 +43,6 @@ import { GameGateway } from './game/game.gateway';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, GameGateway],
+  providers: [AppService]
 })
 export class AppModule {}

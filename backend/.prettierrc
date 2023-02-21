@@ -1,5 +1,4 @@
 {
-  "importOrderParserPlugins": ["typescript", "decorators-legacy"],
   "singleQuote": true,
   "trailingComma": "all"
 }

@@ -1,12 +1,15 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { useNavigate} from "react-router-dom";
 
 export const SignIn = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
 
+  const navigate = useNavigate();
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+    console.log()
     const formData = new FormData(event.currentTarget);
     const form = {
       login: formData.get('login'),
@@ -16,9 +19,11 @@ export const SignIn = () => {
       .post('http://localhost:3001/app/auth/signin', form, {
         headers: {},
       })
-      .then((res) => {
-        sessionStorage.setItem('currentUser', res.data.user.id);
-        document.cookie = res.data.cookie;
+      .then((response) => {
+        document.cookie = response.data;
+        console.log('token = ', response.data);
+        sessionStorage.setItem('currentUser', login);
+        navigate('/CoPage');
       })
       .catch((err) => {
         console.log(err.response.data); // Invalid credentials
@@ -26,25 +31,27 @@ export const SignIn = () => {
   };
 
   return (
-    <div>
-      <h1>SIGNIN</h1>
+    <div className='flex-container'>
       <div>
+      <h1 className='text-center'>SIGNIN</h1>
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="login"
-            placeholder="login"
-            value={login}
-            onChange={(e) => setLogin(e.target.value)}
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <button type="submit">SUBMIT</button>
+          <div className="mc-menu">
+            <input className="mc-button full"
+              type="text"
+              name="login"
+              placeholder="login"
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
+            />
+            <input className="mc-button full"
+              type="password"
+              name="password"
+              placeholder="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+            <button className="mc-button full">SUBMIT</button>
         </form>
       </div>
     </div>

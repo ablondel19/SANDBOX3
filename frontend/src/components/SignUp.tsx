@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export const SignUp = () => {
+
+  const navigate = useNavigate();
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -28,18 +31,22 @@ export const SignUp = () => {
           console.log(res.data);
           sessionStorage.setItem('currentUser', res.data.user.id);
         }
+        document.cookie = res.data.Authorization;
+        console.log(res.data.Authorization);
+        navigate('/SignIn');
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        console.log(error);
       });
   };
 
   return (
-    <div>
-      <h1>SIGNUP</h1>
+    <div className='flex-container'>
       <div>
+      <h1 className='text-center'>SIGNUP</h1>
         <form onSubmit={handleSubmit}>
-          <input
+          <div className="mc-menu">
+          <input className="mc-button full"
             required
             type="text"
             name="login"
@@ -48,7 +55,7 @@ export const SignUp = () => {
             value={login}
             onChange={(e) => setLogin(e.target.value)}
           />
-          <input
+          <input className="mc-button full"
             required
             type="password"
             name="password"
@@ -57,7 +64,7 @@ export const SignUp = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <input
+          <input className="mc-button full"
             type="tel"
             name="tel"
             maxLength={15}
@@ -65,9 +72,8 @@ export const SignUp = () => {
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
           />
-          <button type="submit">
-            SUBMIT
-          </button>
+          </div>
+            <button className="mc-button full">SUBMIT</button>
         </form>
       </div>
     </div>
