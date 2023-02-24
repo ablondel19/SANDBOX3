@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { DisplayErrors } from './DisplayErrors';
 
 export const SignUp = () => {
-
   const navigate = useNavigate();
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [errors, setErrors] = useState();
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -20,60 +21,55 @@ export const SignUp = () => {
     axios
       .post('http://localhost:3001/app/auth/signup', form)
       .then((res) => {
-        if (res.data.user.code === '23505') {
-          if (res.data.user.detail.includes('login')) {
-            console.log('Login already in use.');
-          } else {
-            console.log('Phone number already in use.');
-          }
-        }
-        if (res.data.status !== 400) {
-          console.log(res.data);
-          sessionStorage.setItem('currentUser', res.data.user.id);
-        }
+        sessionStorage.setItem('currentUser', res.data.id);
         document.cookie = res.data.Authorization;
-        console.log(res.data.Authorization);
         navigate('/SignIn');
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        setErrors(err.response.data);
       });
   };
 
   return (
-    <div className='flex-container'>
+    <div className="flex-container">
       <div>
-      <h1 className='text-center'>SIGNUP</h1>
+        <h1 className="text-center">SIGNUP</h1>
         <form onSubmit={handleSubmit}>
           <div className="mc-menu">
-          <input className="mc-button full"
-            required
-            type="text"
-            name="login"
-            maxLength={15}
-            placeholder="login"
-            value={login}
-            onChange={(e) => setLogin(e.target.value)}
-          />
-          <input className="mc-button full"
-            required
-            type="password"
-            name="password"
-            maxLength={15}
-            placeholder="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <input className="mc-button full"
-            type="tel"
-            name="tel"
-            maxLength={15}
-            placeholder="2FA phone number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-          />
+            <input
+              className="mc-button full"
+              required
+              type="text"
+              name="login"
+              maxLength={15}
+              placeholder="login"
+              value={login}
+              onChange={(e) => setLogin(e.target.value)}
+            />
+            <input
+              className="mc-button full"
+              required
+              type="password"
+              name="password"
+              maxLength={15}
+              placeholder="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <input
+              className="mc-button full"
+              type="tel"
+              name="tel"
+              maxLength={15}
+              placeholder="2FA phone number"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+            />
           </div>
-            <button className="mc-button full">SUBMIT</button>
+          <button className="mc-button full">SUBMIT</button>
+          <div className="text-center">
+            <DisplayErrors errors={errors} />
+          </div>
         </form>
       </div>
     </div>

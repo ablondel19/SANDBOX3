@@ -1,3 +1,4 @@
+import { Leaderboard } from '../components/Leaderboard';
 import Nav from '../components/NavBar';
 
 function LeaderboardPage() {
@@ -5,6 +6,7 @@ function LeaderboardPage() {
     <div>
         <Nav />
         <h1>Leaderboard</h1>
+        <Leaderboard />
     </div>
   )
 }

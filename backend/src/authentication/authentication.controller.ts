@@ -63,11 +63,11 @@ export class AuthenticationController {
   
   @Post('signup')
   async signup(@Res() res: ExpressResponse, @Body() register: SignDto) {
-    const user = await this.usersService.signUp(register).catch((err) => {
-      console.log('--->', err);
-      return res.status(400).send(err);
-    });
-    if (user) return res.status(201).send({ user });
+    const user = await this.usersService.signUp(register);
+    console.log('----->', user);
+    if (user[1] === '23505')
+      return res.status(400).send(user);
+    return res.status(201).send(user);
   }
 
   @Post('signin')
@@ -84,7 +84,7 @@ export class AuthenticationController {
       const cookie = await this.authService.login(body);
       return res.status(200).send({ user, cookie });
     }
-    return res.status(401).send('Invalid credentials');
+    return res.status(401).send(['Invalid credentials']);
   }
 
   @UseGuards(JwtAuthenticationGuard)
@@ -92,7 +92,7 @@ export class AuthenticationController {
   async tfaCode(@Res() res: ExpressResponse, @Body() body: codeDto) {
     const userCode = await this.getFromCache(body.login);
     if (userCode.localeCompare(body.code) !== 0) {
-      return res.status(401).send('Invalid code provided');
+      return res.status(401).send(['Invalid code provided']);
     }
     return res.status(200).send(userCode);
   }

@@ -3,7 +3,6 @@ import axios from 'axios';
 
 export const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState(null);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -17,12 +16,8 @@ export const Leaderboard = () => {
 
   return (
     <div>
-      <button onClick={() => setShowLeaderboard(!showLeaderboard)}>
-        Leaderboard
-      </button>
-      {showLeaderboard && (
         <ul>
-          {leaderboard.map((item) => (
+          {leaderboard && leaderboard.map((item) => (
             <li key={item[0]}>
               <p>
                 Login: {item[0]} Victories {item[1]} Rank: {item[2]}
@@ -30,7 +25,6 @@ export const Leaderboard = () => {
             </li>
           ))}
         </ul>
-      )}
     </div>
   );
 };
