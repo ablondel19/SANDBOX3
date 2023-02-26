@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { DisplayErrors } from './DisplayErrors';
 
 export const Code2FA = () => {
   const [code, setCode] = useState('');
+  const [errors, setErrors] = useState();
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -20,6 +22,7 @@ export const Code2FA = () => {
       })
       .catch((err) => {
         console.log(err);
+        setErrors(err.data);
       });
   };
 
@@ -36,6 +39,9 @@ export const Code2FA = () => {
             onChange={(e) => setCode(e.target.value)}
           />
           <button type="submit">SUBMIT</button>
+          <div className="text-center">
+            <DisplayErrors errors={errors} />
+          </div>
         </form>
       </div>
     </div>

@@ -11,6 +11,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { TwilioModule } from 'nestjs-twilio';
 import { TFAService } from './twilio.service';
 import { MulterModule } from '@nestjs/platform-express';
+import { GameGateway} from "../game/game.gateway";
 
 @Module({
   imports: [
@@ -45,7 +46,7 @@ import { MulterModule } from '@nestjs/platform-express';
     LocalStrategy,
     JwtStrategy,
     SessionSerializer,
-    TFAService,
+    TFAService
   ],
   exports: [AuthenticationService],
   controllers: [AuthenticationController],

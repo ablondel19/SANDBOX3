@@ -65,7 +65,7 @@ export class UsersService {
     return await this.userRepository.findOneBy({ id });
   }
 
-  async signUp(user: SignDto): Promise<UserResponseDto | null> {
+  async signUp(user: SignDto): Promise<any | null> {
     console.log(`users.service: signUp(${user.login})`);
     const salt = bcrypt.genSaltSync();
     const hash = bcrypt.hashSync(user.password, salt);
@@ -76,14 +76,10 @@ export class UsersService {
       avatar: readFileSync(path.resolve('src/users/default.jpg')),
     };
     const newUser = await this.userRepository.save(reqBody).catch((err) => {
-      return err;
+      return [err.detail, err.code];
     });
     if (newUser) {
-      return {
-        id: newUser.id,
-        login: newUser.login,
-        status: newUser.status,
-      };
+      return newUser;
     }
     return null;
   }

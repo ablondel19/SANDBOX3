@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { DisplayErrors } from './DisplayErrors';
 
 export const Profile = () => {
   const [avatar, setAvatar] = useState<string>();
   const [login, setLogin] = useState<string>();
   const [file, setFile] = useState<any>();
+  const [errors, setErrors] = useState();
 
   useEffect(() => {
     const fetchAvatar = async () => {
@@ -19,6 +21,7 @@ export const Profile = () => {
         })
         .catch((err) => {
           console.error(err.response.data);
+          setErrors(err.response.data);
         });
     };
 
@@ -44,10 +47,12 @@ export const Profile = () => {
     await axios
       .post('http://localhost:3001/app/users/profile', data)
       .then((res) => {
+        setErrors(null);
         setAvatar(res.data.avatar);
       })
       .catch((err) => {
-        console.error(err);
+        console.error(err.response.data);
+        setErrors(err.response.data);
       });
   };
 
@@ -66,13 +71,13 @@ export const Profile = () => {
         });
       })
       .catch((err) => {
-        console.log(err?.response?.data);
+        console.log(err.response.data);
+        setErrors(err.response.data);
       });
   };
 
   return (
     <div>
-      <h1>EDIT PROFILE</h1>
       <div>
         <input
           type="text"
@@ -88,6 +93,7 @@ export const Profile = () => {
           style={{ height: '5%', width: '5%' }}
         />
         <button onClick={handleProfile}>Update profile</button>
+        <DisplayErrors errors={errors} />
       </div>
     </div>
   );

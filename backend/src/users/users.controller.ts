@@ -44,14 +44,14 @@ export class UsersController {
         return res
           .status(415)
           .send(
-            'The file type is not supported by the server. (png/jpeg/jpg only).',
+            ['The file type is not supported by the server. (png/jpeg/jpg only).'],
           );
       }
       if (req.file?.size > 100000) {
         return res
           .status(413)
           .send(
-            'The file size exceeds the maximum allowed size specified by the server. (100ko).',
+            ['The file size exceeds the maximum allowed size specified by the server. (100ko).'],
           );
       }
       await this.usersService.uploadFile(
@@ -72,19 +72,23 @@ export class UsersController {
       }
       return res
         .status(400)
-        .send('Invalid request. Please choose a different file');
+        .send(['Invalid request. Please choose a different file']);
     }
   }
 
   @Post('profile')
   async getProfile(
-    @Body() body: UpdateProfileDto,
+    @Req() req: ExpressRequest,
     @Res() res: ExpressResponse,
   ) {
-    const user = await this.usersService.getById(body.id);
+    const user = await this.usersService.getById(req.body.id);
     if (user) {
-      if (body.login) {
-        await this.usersService.updateLogin(user, body.login);
+      if (req.body.login) {
+        const check = req.body.login as string;
+        if (check.length < 4 || check.length > 15) {
+          return res.status(400).send(['Login should be between 4 and 15 characters long.']);
+        }
+        await this.usersService.updateLogin(user, req.body.login);
       }
       const base64EncodedAvatar = Buffer.from(user.avatar).toString('base64');
       return res.status(200).send({
@@ -97,6 +101,7 @@ export class UsersController {
 
   @Get('profile/:id')
   async initProfile(@Param('id') id: string, @Res() res: ExpressResponse) {
+    console.log(`usersService.initProfile() -> ${id}`);
     const user = await this.usersService.getById(Number.parseInt(id));
     if (user) {
       const base64EncodedAvatar = Buffer.from(user.avatar).toString('base64');
@@ -114,6 +119,6 @@ export class UsersController {
     if (data) {
       return res.status(200).send(data);
     }
-    return res.status(400).send('Failed to request the leaderboard.');
+    return res.status(400).send(['Failed to request the leaderboard.']);
   }
 }
