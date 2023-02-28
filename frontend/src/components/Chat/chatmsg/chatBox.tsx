@@ -20,7 +20,7 @@ const ChatBox = ({uuid, refetch} : any) => {
 
   function sendMsg() {
     console.log("dfsdfsd")
-    addMessage({variables: {newMessage: {chatUUID: uuid, userID: "jdecorte", message:value}}});
+    addMessage({variables: {newMessage: {chatUUID: uuid, userID: sessionStorage.getItem('currentUser'), message:value}}});
     setValue('');
     
   }

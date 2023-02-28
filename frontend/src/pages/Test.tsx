@@ -19,6 +19,9 @@ const Search = () => {
         <div className="mc-button full">
           <Nav.Link as={Link} to="/SignUp" className="title">SignUp</Nav.Link>
         </div>
+        <div className="mc-button full">
+          <Nav.Link as={Link} to="" className="title">LogIn with Intra42</Nav.Link>
+        </div>
       </div>
     );
       //     name="Login"

@@ -25,7 +25,7 @@ export const CreateChat = ({toggleShowCreate, chat_list} : any) => {
   const onClickCreateChat = () => {
     createChat({
       variables: {
-        newChat : { name: groupname, type: type, password: password, ownerID: "jdecorte", userID: ["jdecorte"] },
+        newChat : { name: groupname, type: type, password: password, ownerID: sessionStorage.getItem('currentUser'), userID: [sessionStorage.getItem('currentUser')] },
       }
     }).then(({data}) => {
       // showNotification({

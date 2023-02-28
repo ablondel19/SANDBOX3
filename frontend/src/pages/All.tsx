@@ -2,12 +2,9 @@ import {Link} from "react-router-dom";
 import React from "react";
 import Navb from "../components/NavBar";
 import Nav from 'react-bootstrap/Nav';
-import NotificationsSystem, { atalhoTheme, notify, setUpNotifications, useNotifications } from 'reapop';
-import { Button } from "@mantine/core";
 
 
 const HomePage = () => {
-  const {notifications, dismissNotification} = useNotifications()
 
     return (
         <div>

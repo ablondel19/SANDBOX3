@@ -33,7 +33,7 @@ export const Chat = () => {
 
 
     const chat_list = useQuery(GET_CHATS, {
-        variables: { userID: "jdecorte"}
+        variables: { userID: sessionStorage.getItem('currentUser')}
       });
 
 

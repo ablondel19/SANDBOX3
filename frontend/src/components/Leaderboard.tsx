@@ -18,8 +18,8 @@ export const Leaderboard = () => {
     <div className="leaderboard">
         <ol>
           {leaderboard && leaderboard.map((item) => (
-            <li key={item[0]}><span>{item[2]}</span>
-                {item[0]} | Victories : {item[1]}
+            <li key={item[0]}><span>{item[2]} {item[0]}</span>
+                WR : 40% l Victories : {item[1]} l Loses : 0 
             </li>
           ))}
         </ol>

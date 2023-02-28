@@ -13,7 +13,6 @@ function CoPage(){
     return (
         <div>
             <HomePage/>
-            <Chat></Chat>
         </div>
     );
 }

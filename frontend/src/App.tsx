@@ -8,7 +8,7 @@ import { client } from './apollo/apolloProvider';
 import { MantineProvider, createEmotionCache } from '@mantine/core';
 import Particles from 'react-particles';
 import { loadFull } from 'tsparticles';
-import NotificationsSystem, { atalhoTheme, setUpNotifications, useNotifications } from 'reapop';
+import { Chat } from './components/Chat/chat';
 
 function App() {
   const particlesInit = async (main) => {

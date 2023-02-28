@@ -95,7 +95,7 @@ const ListMsg = ({data, setShowMessages} : any) => {
                                             return (
                                                     <div style={{padding: "5px"}}>
                                                         {
-                                                            elem.userID === "jdecorte" ?
+                                                            elem.userID === sessionStorage.getItem('currentUser') ?
 
                                                             <Group>
                                                                 <Avatar size={40} color="blue">{elem.userID.slice(0,2).toUpperCase()}</Avatar>

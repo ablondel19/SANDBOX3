@@ -5,7 +5,6 @@ import { ADD_MESSAGE, GET_CHATS, GET_MESSAGES, REMOVE_CHAT } from './query/query
 import { Alert, Avatar, Divider, Group, UnstyledButton, Text, ScrollArea, ActionIcon, Button, TextInput, Loader, Navbar } from "@mantine/core";
 import { useState, useEffect } from 'react';
 import { AiFillSetting, AiOutlineDelete, AiOutlineSetting } from 'react-icons/ai';
-import { HeadChat } from './headchat';
 import { NavbarChat } from './navbar';
 import ListMsg from './chatmsg/listMsg';
 import Popup from 'reactjs-popup';
@@ -123,7 +122,7 @@ export const ListChat = ({toggleShowCreate, chat_list} : any) => {
                                                             </Group>
                                                         </UnstyledButton>
                                                         {
-                                                            elem.ownerID === "jdecorte" &&
+                                                            elem.ownerID === sessionStorage.getItem('currentUser') &&
                                                             <Group>
                                                                 <ActionIcon
                                                                     
@@ -166,7 +165,7 @@ export const ListChat = ({toggleShowCreate, chat_list} : any) => {
                                                             </Group>
                                                         </UnstyledButton>
                                                         {
-                                                            elem.ownerID === "jdecorte" &&
+                                                            elem.ownerID === sessionStorage.getItem('currentUser') &&
                                                             <Group>
                                                                 <ActionIcon
                                                                     

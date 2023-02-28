@@ -20,13 +20,13 @@ export class MessagesService {
               throw new HttpException({ message: 'Input data validation failed' }, HttpStatus.BAD_REQUEST);
         });
 
-        if(chat.muteID.includes("jdecorte")) // mute  user
+        if(chat.muteID.includes(addMessageInput.userID)) // mute  user
             throw new HttpException({ message: 'Input data validation failed' }, HttpStatus.BAD_REQUEST); 
 
         const messages = new Messages();
         messages.chatUUID = chat.uuid;
         messages.message = addMessageInput.message;
-        messages.userID = "jdecorte";
+        messages.userID = addMessageInput.userID;
         return await Messages.save(messages);
     }
 
