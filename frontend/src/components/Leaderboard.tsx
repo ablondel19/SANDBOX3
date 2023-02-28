@@ -15,16 +15,14 @@ export const Leaderboard = () => {
   }, []);
 
   return (
-    <div>
-        <ul>
+    <div className="leaderboard">
+        <ol>
           {leaderboard && leaderboard.map((item) => (
-            <li key={item[0]}>
-              <p>
-                Login: {item[0]} Victories {item[1]} Rank: {item[2]}
-              </p>
+            <li key={item[0]}><span>{item[2]}</span>
+                {item[0]} | Victories : {item[1]}
             </li>
           ))}
-        </ul>
+        </ol>
     </div>
   );
 };

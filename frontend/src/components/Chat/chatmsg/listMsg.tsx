@@ -120,11 +120,13 @@ const ListMsg = ({data, setShowMessages} : any) => {
                     </>
 
                     :
-
-                    <Text
-                        c="dimmed"
-                        size={15}
-                    >No messages have been send.</Text>
+                    <>
+                        <Text
+                            c="dimmed"
+                            size={15}
+                        >No messages have been send.</Text>
+                        <ChatBox uuid={data.uuid} refetch={listmsg.refetch}></ChatBox>
+                    </>
 
                 
             }

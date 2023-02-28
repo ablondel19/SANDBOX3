@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Gaming } from '../components/Canvas';
 import HomePage from './All';
+import { Chat } from '../components/Chat/chat';
 
 export var game = new Gaming(1000, 1000);
 
@@ -12,6 +13,7 @@ function CoPage(){
     return (
         <div>
             <HomePage/>
+            <Chat></Chat>
         </div>
     );
 }
