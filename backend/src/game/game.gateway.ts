@@ -58,8 +58,10 @@ export class GameGateway {
             return;
         }
         const token = client.handshake.headers.authorization.split(' ')[1];
-        const secret = this.configService.get('JWT_SECRET')
-        const info = this.jwtService.verify(token, { secret: secret });
+        const secret = this.configService.get('JWT_SECRET');
+        console.log(token);
+        console.log(secret);
+        const info = this.jwtService.verify(token, { secret });
         client.data.username = info.login;
         console.log('Token provided');
     }

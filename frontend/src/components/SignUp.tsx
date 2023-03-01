@@ -18,16 +18,23 @@ export const SignUp = () => {
       phoneNumber: formData.get('tel'),
     };
     axios
-      .post('http://localhost:3001/app/auth/signup', form, {
-        headers: {},
+      .post('http://localhost:3001/app/auth/signup', form)
+      .then((res) => {
+        if (res.data.user.code === '23505') {
+          if (res.data.user.detail.includes('login')) {
+            console.log('Login already in use.');
+          } else {
+            console.log('Phone number already in use.');
+          }
+        }
+        if (res.data.status !== 400) {
+          console.log(res.data);
+          sessionStorage.setItem('currentUser', res.data.user.id);
+          navigate('/Signin');
+        }
       })
-      .then((response) => {
-        document.cookie = response.data.Authorization;
-        console.log(response.data.Authorization);
-        navigate('/SignIn');
-      })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        console.log(err);
       });
   };
 

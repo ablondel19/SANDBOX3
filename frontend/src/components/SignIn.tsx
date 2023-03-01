@@ -19,14 +19,13 @@ export const SignIn = () => {
       .post('http://localhost:3001/app/auth/signin', form, {
         headers: {},
       })
-      .then((response) => {
-        document.cookie = response.data;
-        console.log('token = ', response.data);
-        sessionStorage.setItem('currentUser', login);
+      .then((res) => {
+        sessionStorage.setItem('currentUser', res.data.user.id);
+        document.cookie = res.data.cookie;
         navigate('/CoPage');
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((err) => {
+        console.log(err.response.data); // Invalid credentials
       });
   };
 

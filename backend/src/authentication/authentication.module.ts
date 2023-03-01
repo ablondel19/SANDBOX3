@@ -11,9 +11,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { TwilioModule } from 'nestjs-twilio';
 import { TFAService } from './twilio.service';
 import { GameGateway} from "../game/game.gateway";
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
+    MulterModule.register({
+        dest: './upload',
+    }),
     UsersModule,
     PassportModule,
     ConfigModule,

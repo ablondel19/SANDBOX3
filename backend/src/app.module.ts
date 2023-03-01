@@ -6,8 +6,6 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configValidationSchema } from './app.schemas';
 import { AuthenticationModule } from './authentication/authentication.module';
-import { DbfilesController } from './dbfiles/dbfiles.controller';
-import { DbfilesModule } from './dbfiles/dbfiles.module';
 import { GameGateway} from "./game/game.gateway";
 import {JwtService} from "@nestjs/jwt";
 import {AuthenticationService} from "./authentication/authentication.service";
@@ -43,9 +41,8 @@ import { GameModule} from "./game/game.module";
         };
       },
     }),
-    DbfilesModule,
   ],
-  controllers: [AppController, DbfilesController],
+  controllers: [AppController],
   providers: [AppService]
 })
 export class AppModule {}

@@ -1,12 +1,8 @@
-import { Exclude } from 'class-transformer';
-import Dbfiles from 'src/dbfiles/dbfiles.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  JoinColumn,
-  OneToOne,
-} from 'typeorm';
+import { readFileSync } from 'graceful-fs';
+import * as path from 'path';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { MatchHistoryDto } from './users.dto';
+const defaultImg = readFileSync(path.resolve('src/users/default.jpg'));
 
 @Entity()
 export class User {
@@ -17,21 +13,39 @@ export class User {
   public login: string;
 
   @Column()
-  @Exclude()
-  password: string;
+  private _password: string;
 
-  @Column()
+  get password(): string {
+    return this._password;
+  }
+
+  set password(value: string) {
+    this._password = value;
+  }
+
+  @Column({ unique: true })
   phoneNumber: string;
 
-  @Column({ default: false, nullable: true })
-  public isActive: boolean;
+  @Column({ default: 'offline' })
+  public status: string;
 
-  @JoinColumn({ name: 'avatarId' })
-  @OneToOne(() => Dbfiles, {
-    nullable: true,
+  @Column('text', { array: true, nullable: true })
+  blackList: string[];
+
+  @Column('text', { array: true, nullable: true })
+  friendList: string[];
+
+  @Column('jsonb', { nullable: true })
+  matchHistory: MatchHistoryDto[];
+
+  @Column({ default: 0 })
+  nVictories: number;
+
+  @Column({ default: 'default.jpg' })
+  filename: string;
+
+  @Column({
+    type: 'bytea',
   })
-  public avatar: Dbfiles;
-
-  @Column({ nullable: true })
-  public avatarId: number;
+  avatar: Uint8Array;
 }

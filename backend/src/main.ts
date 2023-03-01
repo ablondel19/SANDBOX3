@@ -1,16 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as passport from 'passport';
 import { ConfigService } from '@nestjs/config';
+import { ValidationPipe } from '@nestjs/common';
+import * as passport from 'passport';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
-import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
   const PORT = configService.get<any>('PORT');
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.setGlobalPrefix('app');
   app.use(cookieParser());
   app.use(
@@ -27,9 +27,10 @@ async function bootstrap() {
   app.use(passport.session());
   app.enableCors({
     origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PATCH'],
+    methods: ['GET', 'POST', 'PATCH', 'PUT'],
     optionsSuccessStatus: 200,
   });
   await app.listen(PORT);
+  console.log(`App listening on port: ${PORT}`)
 }
 bootstrap();
