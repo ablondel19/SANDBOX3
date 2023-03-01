@@ -10,7 +10,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import {FaUserFriends} from "react-icons/fa"
 import { MemberList } from "./member_list";
 
-const ListMsg = ({data, setShowMessages} : any) => {
+const ListMsg = ({data, setShowMessages, login, avatar} : any) => {
     const [showMembers, setShowMembers] = useState(false);
 
 
@@ -79,35 +79,41 @@ const ListMsg = ({data, setShowMessages} : any) => {
                 </FaUserFriends>
             </ActionIcon>
 
-            <Divider my="sm" />
 
             {
                 showMembers ?
-                    <MemberList data={data}></MemberList>
+                    <MemberList data={data} avatar={avatar}></MemberList>
                 :
+
                 listmsg.data && listmsg.data.getMessages[0] ? 
                     <>
-                        <ScrollArea style={{ height: 450 }} scrollbarSize={8}>
+                        <ScrollArea style={{ height: 450}} scrollbarSize={0}>
 
                                 {
                                     listmsg.data && listmsg.data.getMessages.map((elem : {message: string, userID: string, createdAt: Date}) => {
                                         {
                                             return (
-                                                    <div style={{padding: "5px"}}>
+                                                    <div className="message">
                                                         {
-                                                            elem.userID === sessionStorage.getItem('currentUser') ?
+                                                            elem.userID === login ?
+                                                            <>
+                                                                <Avatar size={40} color="blue" src={`data:image/jpeg;base64,${avatar}`}></Avatar>
+                                                                <div className="text">
+                                                                    <p>{elem.message}</p>
+                                                                </div>
+                                                            
+                                                            </>
 
-                                                            <Group>
-                                                                <Avatar size={40} color="blue">{elem.userID.slice(0,2).toUpperCase()}</Avatar>
-                                                                <Text>{elem.message}</Text>
-                                                            </Group>
+                                                                :
 
-                                                            :
+                                                                <>
+                                                                <div className="text">
+                                                                    <p>{elem.message}</p>
+                                                                </div>
+                                                                <Avatar size={40} color="blue" src={`data:image/jpeg;base64,${avatar}`}></Avatar>
+                                                            
+                                                            </>
 
-                                                            <Group>
-                                                                <Text>{elem.message}</Text>
-                                                                <Avatar size={40} color="red">{elem.userID.slice(0,2).toUpperCase()}</Avatar>
-                                                            </Group>
                                                         }
                                                     </div>
                                             )
@@ -116,7 +122,7 @@ const ListMsg = ({data, setShowMessages} : any) => {
                                 }
                             <div ref={messagesEndRef} />
                         </ScrollArea>
-                        <ChatBox uuid={data.uuid} refetch={listmsg.refetch}></ChatBox>
+                        <ChatBox uuid={data.uuid} refetch={listmsg.refetch} login={login}></ChatBox>
                     </>
 
                     :
@@ -125,7 +131,7 @@ const ListMsg = ({data, setShowMessages} : any) => {
                             c="dimmed"
                             size={15}
                         >No messages have been send.</Text>
-                        <ChatBox uuid={data.uuid} refetch={listmsg.refetch}></ChatBox>
+                        <ChatBox uuid={data.uuid} refetch={listmsg.refetch} login={login}></ChatBox>
                     </>
 
                 

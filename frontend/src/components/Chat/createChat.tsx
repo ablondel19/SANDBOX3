@@ -9,7 +9,7 @@ import { IoMdClose } from 'react-icons/io';
 import { showNotification } from '@mantine/notifications';
 
 
-export const CreateChat = ({toggleShowCreate, chat_list} : any) => {
+export const CreateChat = ({toggleShowCreate, chat_list, login} : any) => {
 
   const [groupname, setGroupName] = useState('');
   const [type, setType] = useState('public');
@@ -25,7 +25,7 @@ export const CreateChat = ({toggleShowCreate, chat_list} : any) => {
   const onClickCreateChat = () => {
     createChat({
       variables: {
-        newChat : { name: groupname, type: type, password: password, ownerID: sessionStorage.getItem('currentUser'), userID: [sessionStorage.getItem('currentUser')] },
+        newChat : { name: groupname, type: type, password: password, ownerID: login, userID: [login] },
       }
     }).then(({data}) => {
       // showNotification({

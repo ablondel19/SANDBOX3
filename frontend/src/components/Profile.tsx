@@ -3,9 +3,6 @@ import axios from 'axios';
 import { DisplayErrors } from './DisplayErrors';
 import { Card, Progress, Notification } from '@mantine/core';
 import { AiFillEdit } from 'react-icons/ai';
-import { showNotification } from '@mantine/notifications';
-import toast from 'react-hot-toast';
-import { notify } from 'reapop';
 
 export const Profile = () => {
   const [avatar, setAvatar] = useState<string>();
@@ -26,7 +23,6 @@ export const Profile = () => {
         })
         .catch((err) => {
           console.error(err.response.data);
-          notify('Welcome to the documentation', 'info');
           setErrors(err.response.data);
         });
     };

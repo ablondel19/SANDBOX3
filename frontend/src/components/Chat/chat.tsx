@@ -1,20 +1,44 @@
 import { ActionIcon, Box, Card, CloseButton, Switch, Text } from '@mantine/core';
 import { CreateChat } from "./createChat"
 import { ListChat } from './listChat';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_CHATS } from "./query/query";
 import { AskPassword } from "./askPassword";
-import { NavbarChat } from "./navbar";
 import { MoodHappy, Send } from "tabler-icons-react";
 import { Fade, FormControlLabel, Modal } from "@mui/material";
 import Popup from "reactjs-popup";
-import { display, height } from '@mui/system';
+import axios from 'axios';
 
 
 export const Chat = () => {
     const [showCreateChat, setShowCreateChat] = useState(false);
     const [showChat, setShowChat] = useState(false);
+    const [errors, setErrors] = useState();
+    const [avatar, setAvatar] = useState<string>();
+    const [login, setLogin] = useState<string>();
+
+    
+    useEffect(() => {
+        const fetchAvatar = async () => {
+          await axios
+            .get(
+              `http://localhost:3001/app/users/profile/${sessionStorage.getItem('currentUser')}`,
+            )
+            .then((res) => {
+              setAvatar(res.data.avatar);
+              setLogin(res.data.login);
+            })
+            .catch((err) => {
+              console.error(err.response.data);
+              setErrors(err.response.data);
+            });
+        };
+    
+        if (!avatar) {
+          fetchAvatar();
+        }
+      }, []);
 
 
     function toggleShowChat() {
@@ -33,7 +57,7 @@ export const Chat = () => {
 
 
     const chat_list = useQuery(GET_CHATS, {
-        variables: { userID: sessionStorage.getItem('currentUser')}
+        variables: { userID: login}
       });
 
 
@@ -75,10 +99,10 @@ export const Chat = () => {
                             nested
                             modal
                             >
-                                <CreateChat toggleShowCreate={toggleShowCreate} chat_list={chat_list}></CreateChat>
+                                <CreateChat toggleShowCreate={toggleShowCreate} chat_list={chat_list} login={login}></CreateChat>
                             </Popup>
 
-                            <ListChat toggleShowCreate={toggleShowCreate} chat_list={chat_list}><AskPassword></AskPassword></ListChat>
+                            <ListChat toggleShowCreate={toggleShowCreate} chat_list={chat_list} login={login} avatar={avatar}><AskPassword></AskPassword></ListChat>
                         </div>
 
                     </Card>

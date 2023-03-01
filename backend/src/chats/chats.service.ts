@@ -150,6 +150,16 @@ export class ChatsService {
         return await Chat.save(chat);
     }
 
+    async addToChat(uuid: string, userID: string) {
+        const chat = await this.findOne(uuid);
+
+        chat.userID = chat.userID.includes(userID)
+        ? chat.userID.filter((item) => item !== userID)
+        : [...chat.userID, userID];
+        return await Chat.save(chat);
+    }
+
+
     async sendDM(originID : string, destID: string) {
 
     }

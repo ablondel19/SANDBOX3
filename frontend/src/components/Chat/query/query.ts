@@ -80,5 +80,10 @@ mutation ToggleAdmin($uuid : String!, $userID: String!) {
   }
 }
 `;
-
-
+export const ADDTOCHAT = gql`
+mutation AddToChat($uuid : String!, $userID: String!) {
+  addToChat(uuid: $uuid, userID: $userID) {
+    userID
+  }
+}
+`

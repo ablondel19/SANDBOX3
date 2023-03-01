@@ -8,7 +8,7 @@ import { height } from '@mui/system';
 import { useMutation } from "@apollo/client";
 import { ADD_MESSAGE } from "../query/query";
 
-const ChatBox = ({uuid, refetch} : any) => {
+const ChatBox = ({uuid, refetch, login} : any) => {
   const [value, setValue] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
 
@@ -19,8 +19,7 @@ const ChatBox = ({uuid, refetch} : any) => {
   });
 
   function sendMsg() {
-    console.log("dfsdfsd")
-    addMessage({variables: {newMessage: {chatUUID: uuid, userID: sessionStorage.getItem('currentUser'), message:value}}});
+    addMessage({variables: {newMessage: {chatUUID: uuid, userID: login, message:value}}});
     setValue('');
     
   }

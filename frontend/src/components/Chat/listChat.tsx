@@ -12,7 +12,7 @@ import { AskPassword } from './askPassword';
 import { EditChat } from './editchat';
 
 
-export const ListChat = ({toggleShowCreate, chat_list} : any) => {
+export const ListChat = ({ toggleShowCreate, chat_list, login, avatar }: any) => {
     const [showMessages, setShowMessages] = useState(false);
     const [showAskPassword, setShowAskPassword] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
@@ -32,21 +32,21 @@ export const ListChat = ({toggleShowCreate, chat_list} : any) => {
     /* -------------------------------------------------------------------------- */
 
     function toggleShowPassword() {
-        if(showAskPassword)
+        if (showAskPassword)
             setShowAskPassword(false)
         else
             setShowAskPassword(true);
     }
 
     function toggleShowMessages() {
-        if(showMessages)
+        if (showMessages)
             setShowMessages(false)
         else
             setShowMessages(true);
     }
 
     function toggleShowEdit() {
-        if(showEdit)
+        if (showEdit)
             setShowEdit(false)
         else
             setShowEdit(true);
@@ -64,33 +64,33 @@ export const ListChat = ({toggleShowCreate, chat_list} : any) => {
     return (
         <div className="py-3 px-5">
             <Popup
-            open={showAskPassword}
-            onClose={() => setShowAskPassword(false)}
-            position="top center"
-            modal
-            nested
+                open={showAskPassword}
+                onClose={() => setShowAskPassword(false)}
+                position="top center"
+                modal
+                nested
             >
                 <AskPassword togglePassword={toggleShowPassword} toggleShowMessages={toggleShowMessages} uuid={dataChat.uuid}></AskPassword>
             </Popup>
 
             <Popup
-            open={showEdit}
-            onClose={() => setShowEdit(false)}
-            position="top center"
-            modal
-            nested
+                open={showEdit}
+                onClose={() => setShowEdit(false)}
+                position="top center"
+                modal
+                nested
             >
                 <EditChat toggleEdit={toggleShowEdit} data={dataChat} chat_list={chat_list}></EditChat>
             </Popup>
 
             {
                 showMessages ?
-                    <ListMsg data={dataChat} setShowMessages={setShowMessages}></ListMsg>
+                    <ListMsg data={dataChat} setShowMessages={setShowMessages} login={login} avatar={avatar}></ListMsg>
 
-                :
+                    :
 
                     <>
-                        <NavbarChat></NavbarChat>
+                        <NavbarChat login={login} avatar={avatar}></NavbarChat>
                         <ScrollArea
                             style={{
                                 height: 450,
@@ -98,108 +98,108 @@ export const ListChat = ({toggleShowCreate, chat_list} : any) => {
                             }}
                             scrollbarSize={5}
                             offsetScrollbars
-                            
+
                         >
                             <h4>public</h4>
-                            <Divider my="sm"/>
+                            <Divider my="sm" />
 
-                                {
-                                    chat_list.data && chat_list.data.aliveChats.map((elem : {name : string, ownerID: string, uuid : string, type: string, userID: []}) => {
-                                        return (
-                                            elem.type === "public" &&
-                                            <div style={{padding: "5px"}}>
+                            {
+                                chat_list.data && chat_list.data.aliveChats.map((elem: { name: string, ownerID: string, uuid: string, type: string, userID: [] }) => {
+                                    return (
+                                        elem.type === "public" &&
+                                        <div style={{ padding: "5px" }}>
 
+                                            <Group>
+                                                <UnstyledButton
+                                                    onClick={() => {
+                                                        setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID });
+                                                        toggleShowMessages();
+                                                    }}
+                                                >
                                                     <Group>
-                                                        <UnstyledButton
-                                                        onClick={() => {
-                                                            setDataChat({uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID});
-                                                            toggleShowMessages();
-                                                        }}
-                                                        >
-                                                            <Group>
-                                                                <Avatar size={40} color="blue">{elem.name.slice(0,2).toUpperCase()}</Avatar>
-                                                                <Text>{elem.name}</Text>
-                                                            </Group>
-                                                        </UnstyledButton>
-                                                        {
-                                                            elem.ownerID === sessionStorage.getItem('currentUser') &&
-                                                            <Group>
-                                                                <ActionIcon
-                                                                    
-                                                                    onClick={() => onRemoveHandler({variables : {uuid: elem.uuid}})}
-                                                                ><AiOutlineDelete size={20} color="red"></AiOutlineDelete></ActionIcon>
-                                                                <ActionIcon
-                                                                    onClick={() => {
-                                                                        setDataChat({uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID});
-                                                                        toggleShowEdit();
-                                                                    }
-                                                                    }
-                                                                ><AiOutlineSetting size={20}></AiOutlineSetting></ActionIcon>
-                                                            </Group>
-                                                        }
+                                                        <Avatar size={40} color="blue">{elem.name.slice(0, 2).toUpperCase()}</Avatar>
+                                                        <Text>{elem.name}</Text>
                                                     </Group>
-                                            </div>
-                                        )
-                                    })
-                                }
+                                                </UnstyledButton>
+                                                {
+                                                    elem.ownerID === login &&
+                                                    <Group>
+                                                        <ActionIcon
+
+                                                            onClick={() => onRemoveHandler({ variables: { uuid: elem.uuid } })}
+                                                        ><AiOutlineDelete size={20} color="red"></AiOutlineDelete></ActionIcon>
+                                                        <ActionIcon
+                                                            onClick={() => {
+                                                                setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID });
+                                                                toggleShowEdit();
+                                                            }
+                                                            }
+                                                        ><AiOutlineSetting size={20}></AiOutlineSetting></ActionIcon>
+                                                    </Group>
+                                                }
+                                            </Group>
+                                        </div>
+                                    )
+                                })
+                            }
 
                             <h4>private</h4>
                             <Divider my="sm" />
 
                             {
-                                    chat_list.data && chat_list.data.aliveChats.map((elem : {name : string, ownerID: string, uuid : string, type: string, userID: []}) => {
-                                        return (
-                                            elem.type === "private" &&
-                                            <div style={{padding: "5px"}}>
+                                chat_list.data && chat_list.data.aliveChats.map((elem: { name: string, ownerID: string, uuid: string, type: string, userID: [] }) => {
+                                    return (
+                                        elem.type === "private" &&
+                                        <div style={{ padding: "5px" }}>
 
+                                            <Group>
+                                                <UnstyledButton
+                                                    onClick={() => {
+                                                        setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID });
+                                                        toggleShowPassword()
+                                                    }}
+                                                >
                                                     <Group>
-                                                        <UnstyledButton
-                                                        onClick={() => {
-                                                            setDataChat({uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID});
-                                                            toggleShowPassword()
-                                                        }}
-                                                        >
-                                                            <Group>
-                                                                <Avatar size={40} color="blue">{elem.name.slice(0,2).toUpperCase()}</Avatar>
-                                                                <Text>{elem.name}</Text>
-                                                            </Group>
-                                                        </UnstyledButton>
-                                                        {
-                                                            elem.ownerID === sessionStorage.getItem('currentUser') &&
-                                                            <Group>
-                                                                <ActionIcon
-                                                                    
-                                                                    onClick={() => onRemoveHandler({variables : {uuid: elem.uuid}})}
-                                                                ><AiOutlineDelete size={20} color="red"></AiOutlineDelete></ActionIcon>
-                                                                <ActionIcon
-                                                                    onClick={() => {
-                                                                        setDataChat({uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID});
-                                                                        setShowEdit(true);
-
-                                                                    }
-                                                                    }
-                                                                ><AiOutlineSetting size={20}></AiOutlineSetting></ActionIcon>
-                                                            </Group>
-                                                        }
+                                                        <Avatar size={40} color="blue">{elem.name.slice(0, 2).toUpperCase()}</Avatar>
+                                                        <Text>{elem.name}</Text>
                                                     </Group>
-                                            </div>
-                                        )
-                                    })
-                                }
+                                                </UnstyledButton>
+                                                {
+                                                    elem.ownerID === login &&
+                                                    <Group>
+                                                        <ActionIcon
+
+                                                            onClick={() => onRemoveHandler({ variables: { uuid: elem.uuid } })}
+                                                        ><AiOutlineDelete size={20} color="red"></AiOutlineDelete></ActionIcon>
+                                                        <ActionIcon
+                                                            onClick={() => {
+                                                                setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID });
+                                                                setShowEdit(true);
+
+                                                            }
+                                                            }
+                                                        ><AiOutlineSetting size={20}></AiOutlineSetting></ActionIcon>
+                                                    </Group>
+                                                }
+                                            </Group>
+                                        </div>
+                                    )
+                                })
+                            }
                         </ScrollArea>
 
                         <Button
-                        style={{
-                            bottom:25,
-                            left: 15,
-                            position: 'absolute',
+                            style={{
+                                bottom: 25,
+                                left: 15,
+                                position: 'absolute',
 
-                        }}
-                        radius="lg" onClick={() => toggleShowCreate(true)}>
+                            }}
+                            radius="lg" onClick={() => toggleShowCreate(true)}>
                             Add Group
                         </Button>
                     </>
-                }
-            </div>
+            }
+        </div>
     )
 }

@@ -3,12 +3,9 @@ import {
     Group,
     Paper,
     Text,
-    Title,
-    UnstyledButton,
   } from "@mantine/core";
-import { MessageCircle } from "tabler-icons-react";
 
-export const NavbarChat = () => {
+export const NavbarChat = ({login, avatar} : any) => {
 
     return (
         <Paper
@@ -27,10 +24,10 @@ export const NavbarChat = () => {
             align="center"
           >
               <Avatar
-                src={"https://images.unsplash.com/photo-1554080353-a576cf803bda?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8cGhvdG98ZW58MHx8MHx8&w=1000&q=80"}
+                src={`data:image/jpeg;base64,${avatar}`}
                 radius="xl"
               />
-            <Text>{sessionStorage.getItem('currentUser')}</Text>
+            <Text>{login}</Text>
       
           </Group>
         </Paper>

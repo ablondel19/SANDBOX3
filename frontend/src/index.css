@@ -319,6 +319,9 @@ body {
   height: 2em;
 }
 
+/* ────────────────────────────────────────────────────────────────────────── */
+
+
 .match-list {
   list-style: none;
 }
@@ -364,4 +367,23 @@ body {
 .lose {
   background-color: rgb(182, 70, 70);
   color: white;
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+
+.message {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.message .text {
+  background-color: #f2f2f2;
+  padding: 10px;
+  border-radius: 5px;
+  word-wrap: break-word;
+  width: 180px;
+}
+
+.message .text p {
+  margin: 0;
 }
