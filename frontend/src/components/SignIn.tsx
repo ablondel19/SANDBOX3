@@ -22,8 +22,9 @@ export const SignIn = () => {
         headers: {},
       })
       .then((response) => {
+        console.log('response = ', response);
         setErrors(null);
-        document.cookie = response.data;
+        document.cookie = response.data.cookie;
         console.log('token = ', response.data);
         sessionStorage.setItem('currentUser', response.data.user.id);
         navigate('/CoPage');
