@@ -41,9 +41,8 @@ export class ChatsResolver {
     @Query(() => [Chat], { name: 'aliveChats' })
     findAliveChats(
       @Args('userID', { type: () => String, nullable: true }) userID: string,
-      @Args('type', { type: () => String, nullable: true }) type: string,
     ) {
-      return this.chatsService.findAvailableChats(userID, type);
+      return this.chatsService.findAvailableChats(userID);
     }
   
     @ResolveField(() => [Messages])
@@ -83,14 +82,6 @@ export class ChatsResolver {
       return this.chatsService.toggleAdmin(uuid, userID);
     }
   
-    @Mutation(() => Chat)
-    addToChat(
-      @Args('uuid', { type: () => String }) uuid: string,
-      @Args('userID', { type: () => String }) userID: string,
-    ) {
-      return this.chatsService.addToChat(uuid, userID);
-    }
-
     // @Mutation(() => Chat)
     // createDM(
     //   @Args('user1', { type: () => String }) origUserID: string,

@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_CHATS = gql`
-query GetChats($userID: String, $type: String) {
-  aliveChats(userID: $userID, type: $type) {
+query GetChats($userID: String) {
+  aliveChats(userID: $userID) {
     uuid
     name
     type
@@ -45,14 +45,13 @@ mutation	RemoveChat($uuid : String!) {
 }
 `;
 export const GET_MESSAGES = gql`
-query GetMessages($uuid: String!) {
-  getMessages(uuid: $uuid) {
-    chatUUID
-    message
-    userID
-    createdAt
+  query GetMessages($uuid: String!) {
+    getMessages(uuid: $uuid) {
+      message
+      userID
+      createdAt
+    }
   }
-}
 `;
 export const CHECK_PASSWORD = gql`
 query checkPassword($uuid : String!, $pass: String!) {
@@ -80,10 +79,15 @@ mutation ToggleAdmin($uuid : String!, $userID: String!) {
   }
 }
 `;
-export const ADDTOCHAT = gql`
-mutation AddToChat($uuid : String!, $userID: String!) {
-  addToChat(uuid: $uuid, userID: $userID) {
-    userID
+
+export const CHATLOG_SUBSCRIPTION = gql`
+  subscription onChatLogAdded($uuid: String!) {
+    chatLogAdded(uuid: $uuid) {
+      index
+      userID
+      message
+      type
+      createdAt
+    }
   }
-}
-`
+`;

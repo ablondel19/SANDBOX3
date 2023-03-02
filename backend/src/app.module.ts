@@ -16,6 +16,7 @@ import { ChatsModule } from './chats/chats.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { MessagesModule } from './Messages/messages.module';
+import { PubSubModule } from './pub-sub/pub-sub.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { MessagesModule } from './Messages/messages.module';
     }),
     ChatsModule,
     MessagesModule,
+    PubSubModule,
   ],
   controllers: [AppController],
   providers: [AppService]

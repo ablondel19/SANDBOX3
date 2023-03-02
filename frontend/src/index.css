@@ -3,13 +3,7 @@
 @tailwind utilities;
 
 
-  
-.cfb{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+
 
 .Container{
   font-family: arial;
@@ -21,16 +15,6 @@
   /* Setup */
   position: relative;
   background-color: aqua;
-}
-
-.child{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #30cf25;
-    padding: 10px;
-    border-radius: 10%;
 }
 
 
@@ -207,6 +191,7 @@ body {
   margin: 100px;
 }
 
+
 /* ────────────────────────────────────────────────────────────────────────── */
 
 .leaderboard {
@@ -307,7 +292,6 @@ body {
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.549);
-  z-index: 10000;
   color: #fafafa;
   transition: background-color 0.2s ease-in-out;
   border-radius: 100px;
@@ -386,4 +370,14 @@ body {
 
 .message .text p {
   margin: 0;
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+
+.chat-top-bar {
+  top: 0
+}
+
+.error {
+  color: #d86161;
 }

@@ -1,26 +1,30 @@
-import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent, Subscription } from '@nestjs/graphql';
 import { Messages } from './entities/messages.entity';
 import { MessagesService } from './messages.service';
 import { AddMessageInput } from './dto/addmessage.input';
+import { PubSubProvider } from '../pub-sub/pub-sub.provider';
 
 @Resolver(() => Messages)
 export class MessagesResolver {
   constructor(
     private readonly messagesService: MessagesService,
+    private readonly pubSubProvider: PubSubProvider,
     ) {}
 
     @Mutation(() => Messages)
     addMessage(@Args('addMessageInput') addMessageInput: AddMessageInput) {
-      return this.messagesService.addMessage(addMessageInput);
+      const newMsg = this.messagesService.addMessage(addMessageInput);
+      this.pubSubProvider.getPubSub().publish('chatMsgAdded', { chatLogAdded: newMsg });
+      return newMsg;
     }
 
     @Query(() => [Messages], { name: 'getMessages' })
-    findChatLogsFromChat(@Args('uuid', { type: () => String }) uuid: string) {
+    getMessages(@Args('uuid', { type: () => String }) uuid: string) {
       return this.messagesService.getMessages(uuid);
     }
 
     @Query(() => [Messages], { name: 'getAllMessages' })
-    findAll() {
+    getAllMessages() {
       return this.messagesService.findAll();
     }
 
@@ -38,5 +42,15 @@ export class MessagesResolver {
     //   return this.chatsService.checkPassword(uuid, password);
     // }
   
+
+    @Subscription(() => Messages, {
+      filter: (payload, variables) => {
+        return payload.chatLogAdded.chatUUID === variables.uuid;
+      },
+    })
+    chatLogAdded(@Args('uuid') uuid: string) {
+      uuid;
+      return this.pubSubProvider.getPubSub().asyncIterator('chatMsgAdded');
+    }
 
 }

@@ -92,16 +92,15 @@ export class ChatsService {
         return await Chat.remove(chat);
     }
 
-    async findAvailableChats(userID: string, type : string) {
-
-        let additionalWhereClause = ![undefined, null, ''].includes(type) ? ` AND "type"='${type}'` : '';
-        additionalWhereClause += ![undefined, null, ''].includes(userID)
-          ? ` AND '${userID}'=ANY("userID")`
-          : ` AND "type"!='dm'`;
+    async findAvailableChats(userID: string) {
+        let additionalWhereClause = ![undefined, null, ''].includes("public") ? `"type"='${"public"}'` : '';
+        // additionalWhereClause += ![undefined, null, ''].includes(userID)
+        //   ? ` AND '${userID}'=ANY("userID")`
+        //   : ` AND "type"!='dm'`;
 
         const chatList = await Chat.getRepository()
         .createQueryBuilder()
-        .where('"isAlive" = true' + additionalWhereClause)
+        .where(additionalWhereClause)
         .orderBy('"createdAt"')
         .getMany();
         return chatList;
@@ -147,15 +146,6 @@ export class ChatsService {
         chat.adminID = chat.adminID.includes(userID)
         ? chat.adminID.filter((item) => item !== userID)
         : [...chat.adminID, userID];
-        return await Chat.save(chat);
-    }
-
-    async addToChat(uuid: string, userID: string) {
-        const chat = await this.findOne(uuid);
-
-        chat.userID = chat.userID.includes(userID)
-        ? chat.userID.filter((item) => item !== userID)
-        : [...chat.userID, userID];
         return await Chat.save(chat);
     }
 

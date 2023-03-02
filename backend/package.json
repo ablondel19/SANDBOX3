@@ -49,6 +49,7 @@
     "express-fileupload": "^1.4.0",
     "express-session": "^1.17.3",
     "graphql": "^16.6.0",
+    "graphql-subscriptions": "^2.0.0",
     "graphql-upload": "^16.0.2",
     "joi": "^17.7.0",
     "jsonwebtoken": "^9.0.0",

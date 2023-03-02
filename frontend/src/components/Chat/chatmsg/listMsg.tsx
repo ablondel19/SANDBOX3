@@ -1,144 +1,186 @@
-import { ActionIcon, Avatar, Button, Divider, Group, ScrollArea, Stack, TextInput, Text } from "@mantine/core";
+import { ActionIcon, Avatar, Button, Divider, Group, ScrollArea, Stack, TextInput, Text, Popover, Space, Loader } from "@mantine/core";
 import { getHotkeyHandler, useScrollIntoView } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { MoodHappy, Send } from "tabler-icons-react";
-import ChatBox from "./chatBox";
-import { useLazyQuery, useQuery } from "@apollo/client";
-import { GET_MESSAGES } from "../query/query";
+import ChatBox from "./box";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { CHATLOG_SUBSCRIPTION, GET_MESSAGES } from "../query/query";
 import { IoIosArrowBack } from "react-icons/io";
-import {FaUserFriends} from "react-icons/fa"
+import { FaUserFriends } from "react-icons/fa"
 import { MemberList } from "./member_list";
+import { BiBlock } from 'react-icons/bi';
+import { IoMdClose, IoMdExit } from 'react-icons/io';
+import { GrUpgrade } from "react-icons/gr";
+import { MUTE, UPDATE_CHAT, KICK, ADMIN } from '../query/query';
+import { AiOutlineUserAdd } from "react-icons/ai";
+import { ClassNames } from "@emotion/react";
+import Messages from "./messages";
 
-const ListMsg = ({data, setShowMessages, login, avatar} : any) => {
+
+const ListMsg = ({... props}) => {
+    const { dataChat, setShowMessages, login, avatar} = props;
     const [showMembers, setShowMembers] = useState(false);
 
+    
+    /* -------------------------------------------------------------------------- */
+    /*                             Mutation and query                             */
+    /* -------------------------------------------------------------------------- */
+    
+    
+    const { loading, error, data, subscribeToMore, refetch } = useQuery(GET_MESSAGES, {
+        variables: {
+            uuid: dataChat.uuid,
+        },
+        fetchPolicy: 'network-only',
+    });
+    
+    // ─────────────────────────────────────────────────────────────────────────────
 
     function toggleShowMembers() {
-        if(showMembers)
+        if (showMembers)
             setShowMembers(false);
         else
             setShowMembers(true);
     }
 
-    /* -------------------------------------------------------------------------- */
-    /*                             Mutation and query                             */
-    /* -------------------------------------------------------------------------- */
 
-    const listmsg = useQuery(GET_MESSAGES, {
-        variables: {
-            uuid: data.uuid
-        }
-    });
+
+
+
+    //   useEffect(() => {
+    //     const unsubscribe = subscribeToNewMessage({
+    //       document: CHATLOG_SUBSCRIPTION,
+    //     });
+    //     return () => {
+    //       unsubscribe();
+    //     };
+    //   }, [subscribeToNewMessage]);
+      
+    //   if (listmsg.loading) {
+    //     return <>Loading...</>;
+    //   }
+    //   if (listmsg.error) {
+    //     return <>ERROR</>;
+    //   }
+
+
+    // ─────────────────────────────────────────────────────────────────────
+
     
-
-    const messagesEndRef = useRef<HTMLDivElement>(null)
-
-    const scrollToBottom = () => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-    }
-  
+    const scrollRef = useRef<HTMLDivElement>(null);
+    
     useEffect(() => {
-      scrollToBottom()
-    }, [listmsg]);
-    
-  return (
-    <>
-        <div className="divide-y divide-gray-200">
-            <ActionIcon
-            onClick={() => setShowMessages(false)}
-            >
-                <IoIosArrowBack
-                    style={{ 
-                        position: 'absolute',
-                        top: 10,
-                        left: 10,
-                    }}
-                >
-                </IoIosArrowBack>
-            </ActionIcon>
-            
-
-            <h4
-            style={{
-                position: 'absolute',
-                right: '50%',
-                top: 0
-            }}
-            >{data.name}</h4>
-
-             <ActionIcon
-             style={{
-                position: 'absolute',
-                top: 20,
-                right: 60,
-             }}
-            onClick={() => toggleShowMembers()}
-            >
-                <FaUserFriends>
-                </FaUserFriends>
-            </ActionIcon>
+        scrollRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, [data]);
 
 
-            {
-                showMembers ?
-                    <MemberList data={data} avatar={avatar}></MemberList>
-                :
+    if(loading) return <Loader></Loader>;
+    if(error) return <p className="error">Error : {error.message}</p>;
 
-                listmsg.data && listmsg.data.getMessages[0] ? 
-                    <>
-                        <ScrollArea style={{ height: 450}} scrollbarSize={0}>
 
-                                {
-                                    listmsg.data && listmsg.data.getMessages.map((elem : {message: string, userID: string, createdAt: Date}) => {
-                                        {
-                                            return (
-                                                    <div className="message">
-                                                        {
-                                                            elem.userID === login ?
-                                                            <>
-                                                                <Avatar size={40} color="blue" src={`data:image/jpeg;base64,${avatar}`}></Avatar>
-                                                                <div className="text">
-                                                                    <p>{elem.message}</p>
-                                                                </div>
-                                                            
-                                                            </>
+    const chatMsg = data.getMessages.map((item) => {
+        const createdDate = new Date(item.createdAt);
+        const hour = createdDate.getHours();
+        const min = createdDate.getMinutes() < 10 ? '0' + createdDate.getMinutes() : createdDate.getMinutes();
+        const messageCreatedTime = `${hour}:${min}`;
+        return {
+          ...item,
+          createdAt: messageCreatedTime,
+        };
+      });
 
-                                                                :
 
-                                                                <>
-                                                                <div className="text">
-                                                                    <p>{elem.message}</p>
-                                                                </div>
-                                                                <Avatar size={40} color="blue" src={`data:image/jpeg;base64,${avatar}`}></Avatar>
-                                                            
-                                                            </>
 
-                                                        }
-                                                    </div>
-                                            )
-                                        }
-                                    })
-                                }
-                            <div ref={messagesEndRef} />
-                        </ScrollArea>
-                        <ChatBox uuid={data.uuid} refetch={listmsg.refetch} login={login}></ChatBox>
-                    </>
-
-                    :
-                    <>
-                        <Text
-                            c="dimmed"
-                            size={15}
-                        >No messages have been send.</Text>
-                        <ChatBox uuid={data.uuid} refetch={listmsg.refetch} login={login}></ChatBox>
-                    </>
-
-                
+    const subscribeToNewMessage = () => {
+        return subscribeToMore({
+          document: CHATLOG_SUBSCRIPTION,
+          variables: { uuid: data.uuid },
+          updateQuery: (prev, { subscriptionData }) => {
+            if (!subscriptionData.data) {
+              return prev;
             }
-        </div>
-    </>
-  );
+            const newFeedItem = subscriptionData.data.chatMsgAdded;
+            const res = Object.assign({}, prev, {
+              chat: {
+                chatMsg: [...prev.chat.chatMsg, newFeedItem],
+              },
+            });
+            return res;
+          },
+        });
+      };
+
+    //   useEffect(() => {
+    //     const unsubscribe = subscribeToNewMessage();
+    //     return () => {
+    //       unsubscribe();
+    //     };
+    //   }, [subscribeToNewMessage]);
+    //   if (loading) {
+    //     return <>Loading...</>;
+    //   }
+    //   if (error) {
+    //     return <>ERROR</>;
+    //   }
+
+
+    return (
+        <>
+            <div>
+                <div>
+                    <Group>
+                        <ActionIcon onClick={() => setShowMessages(false)}>
+                            <IoIosArrowBack>
+                            </IoIosArrowBack>
+                        </ActionIcon>
+                        <Space w="xl" />
+                        <h4>{dataChat.name}</h4>
+                        <Space w="xl" />
+                        <ActionIcon
+                            onClick={() => toggleShowMembers()}
+                        >
+                            <AiOutlineUserAdd>
+                            </AiOutlineUserAdd>
+                        </ActionIcon>
+                    </Group>
+                    <Divider style={{marginBottom: "10px"}}></Divider>
+                </div>
+
+                {
+                    showMembers ?
+                        <MemberList subscribeToNewMessage={subscribeToNewMessage} data={dataChat} avatar={avatar}></MemberList>
+
+                        :
+                        
+                        <>
+                        {
+                            chatMsg && chatMsg[0] ?
+                                <>
+                                    <ScrollArea style={{ height: 480 }} scrollbarSize={0}>
+                                        <Messages
+                                            chatMsg={chatMsg}
+                                            subscribeToNewMessage={subscribeToNewMessage}
+                                            login={login}
+                                            avatar={avatar}
+                                        ></Messages>
+                                        <div ref={scrollRef} />
+                                    </ScrollArea>
+                                </>
+
+                                :
+                                <>
+                                    <Text
+                                        c="dimmed"
+                                        size={15}
+                                    >No messages have been send.</Text>
+                                </>
+                            }
+                            <ChatBox uuid={dataChat.uuid} refetch={refetch} login={login}></ChatBox>
+                        </>
+                }
+            </div>
+        </>
+    );
 };
 
 export default ListMsg;

@@ -61,6 +61,8 @@ export const ListChat = ({ toggleShowCreate, chat_list, login, avatar }: any) =>
         },
     });
 
+
+
     return (
         <div className="py-3 px-5">
             <Popup
@@ -85,7 +87,7 @@ export const ListChat = ({ toggleShowCreate, chat_list, login, avatar }: any) =>
 
             {
                 showMessages ?
-                    <ListMsg data={dataChat} setShowMessages={setShowMessages} login={login} avatar={avatar}></ListMsg>
+                    <ListMsg dataChat={dataChat} setShowMessages={setShowMessages} login={login} avatar={avatar}></ListMsg>
 
                     :
 
