@@ -45,7 +45,7 @@ export class MessagesResolver {
 
     @Subscription(() => Messages, {
       filter: (payload, variables) => {
-        return payload.chatLogAdded.chatUUID === variables.uuid;
+        return payload.chatMsgAdded.chatUUID === variables.uuid;
       },
     })
     chatLogAdded(@Args('uuid') uuid: string) {

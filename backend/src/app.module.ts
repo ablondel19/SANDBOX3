@@ -23,6 +23,11 @@ import { PubSubModule } from './pub-sub/pub-sub.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
+      installSubscriptionHandlers: true,
+      // subscriptions: {
+      //   path: '/subscriptions',
+      //   keepAlive: 5000,
+      // }
     }),
     TypeOrmModule.forRootAsync({
       imports: [
