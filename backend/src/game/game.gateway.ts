@@ -48,7 +48,6 @@ export class GameGateway {
     }
     @UseGuards(JwtAuthenticationGuard)
     async handleConnection(client: Socket, ){
-        console.log('Player connected !');
         if (!client || client === undefined) {
             console.log('No client provided');
         }
@@ -58,8 +57,6 @@ export class GameGateway {
             return;
         }
         const token = client.handshake.headers.authorization.split(' ')[1];
-        console.log(client.handshake.headers.authorization);
-        console.log('1');
         const secret = this.configService.get('JWT_SECRET')
         const info = jwt.verify(token, Buffer.from(secret, 'base64'));
         client.data.username = Object.values(info)[0];
@@ -90,8 +87,8 @@ export class GameGateway {
         @MessageBody() data: string,
         @ConnectedSocket() client: Socket,
     ): any {
-        console.log(`${client.data.username} want to spectate lobby 0`);
-        if (this.LobbyManager.getLobbyInstance('0') === undefined || this.LobbyManager.LobbyList[0].Ready.length < 2) {
+        console.log(`${client.data.username} want to spectate lobby`);
+        if (this.LobbyManager.getLobbyInstance('0') === undefined) {
             throw new Error('No lobby to spectate');
         }
         this.LobbyManager.SpectatorJoin(client.data.username, client);

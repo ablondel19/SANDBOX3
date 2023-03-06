@@ -20,7 +20,7 @@ class Player
     moveDown:boolean
     constructor(x:number, y:number, width:number, height:number, color:string, score:number, min:number, max:number, speed:number) {
         this.x = x;
-        this.y = y;
+        this.y = y - height / 2;
         this.width = width;
         this.height = height;
         this.color = color;
@@ -73,10 +73,16 @@ export class gameInfo{
     Player2:Player;
     CDimension:any = {width: 0, height: 0};
     constructor(widths:number, heights:number){
-        this.Balling = new Ball(widths, heights, 10, 10, 10, 10, 'red');
-        this.Player1 = new Player(0, 0, 10, 10, '#0d35ca', 0, 0, 0, 3);
-        this.Player2 = new Player(widths, heights, 10, 10, '#ffffff', 0, 0, 0, 3);
+        this.Balling = new Ball((widths / 2), (heights / 2), 10, 10, 5, 0, 'red');
+        this.Player1 = new Player(0, 500, 20, 100, '#0d35ca', 0, 0, heights, 10);
+        this.Player2 = new Player(widths - 20, (heights / 2), 20, 100, '#05f315', 0, 0, heights, 10);
         this.CDimension = {width: widths, height: heights};
+    }
+    resetCanvas()
+    {     
+        this.Balling = new Ball((this.CDimension.width / 2), (this.CDimension.height / 2), 10, 10, 5, 10, 'red');
+        this.Player1 = new Player(0, 500, 20, 100, '#0d35ca', 0, 0, this.CDimension.height, 10);
+        this.Player2 = new Player(this.CDimension.width - 20, (this.CDimension.height / 2), 20, 100, '#05f315', 0, 0, this.CDimension.height, 10);
     }
     copy(other:gameInfo)
     {
@@ -109,9 +115,9 @@ export class Gaming{
         DrawBall(this.Info.Balling.x, this.Info.Balling.y, this.Info.Balling.radius, this.Info.Balling.color);
     }
     Canvas = () => {
-        
         const canvasRef = useRef<HTMLCanvasElement>(null);
         useEffect(() => {
+            this.Info.resetCanvas();
             if (canvasRef.current) {
                 canvas = canvasRef.current;
                 context = canvas.getContext('2d');

@@ -85,25 +85,24 @@ export class gameInfo {
 
     constructor(widths: number, heights: number) {
         this.Running = false;
-        this.Connected = []
+        this.Connected = [];
         this.CDimension = { width: widths, height: heights };
-        this.Balling = new Ball(widths, heights, 10, 10, 5, 0, 'red');
+        this.Balling = new Ball((widths), (heights), 10, 10, 5, 0, 'red');
         this.Player1 = new Player(0, 500, 20, 100, '#1542d3', 0, 0, heights, 10);
         this.Player2 = new Player(widths - 20, (heights / 2), 20, 100, '#05f315', 0, 0, heights, 10);
-
+    }
+    resetCanvas() {
+        this.Running = false;
+        this.Connected = [];
+        this.Balling = new Ball((this.CDimension.width / 2) , (this.CDimension.height / 2), 10, 10, 5, 0, 'red');
+        this.Player1 = new Player(0, 500, 20, 100, '#1542d3', 0, 0, this.CDimension.height, 10);
+        this.Player2 = new Player(this.CDimension.width - 20, (this.CDimension.height / 2), 20, 100, '#05f315', 0, 0, this.CDimension.height, 10);
     }
     CheckMove(id: string){
-        console.log(this);
         if (this.Player1.name === id)
-        {
-            console.log("Player 1 :", id);
             return this.Player1;
-        }
         else if (this.Player2.name === id)
-        { 
-            console.log("Player 2 :", id);
             return this.Player2;
-        }
     }
     MoveHandler(){
         if (this.Player1.moveUp === true)
@@ -196,6 +195,7 @@ export class Gaming {
         if (this.Info.Connected.length < 2){
             clearInterval(this.intID);
             this.Info.Running = false;
+            this.Info.resetCanvas();
             console.log("Game Stopped");
             return;
         }

@@ -1,4 +1,6 @@
-import {useNavigate} from "react-router-dom";
+import { useState } from "react";
+import {Route, useNavigate, useNavigation} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function GameWon() {
     const Navigate = useNavigate();
@@ -30,4 +32,18 @@ function GameDraw() {
     );
 }
 
-export {GameWon, GameLost, GameDraw};
+function SpectateResult() {
+    
+    const location = useLocation();
+    const Navigate = useNavigate();
+    const WinnerName = location.state.name;
+    return (
+        <div>
+            <h1> {WinnerName} is the Winner !!!!! </h1>
+            <button onClick={() => Navigate('/HomePage')}>Back to Main Menu</button>
+        </div>
+    );
+}
+
+
+export {GameWon, GameLost, GameDraw, SpectateResult};

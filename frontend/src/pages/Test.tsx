@@ -9,8 +9,11 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import {Route, Routes, Link, Router} from "react-router-dom";
 import SignIn from './SignIn';
+import { game } from '../pages/CoPage';
 
 const Search = () => {
+  if (game !== undefined && game.socket)
+      game.socket.close();
     return (
       <div className="mc-menu">
         <div className="mc-button full">
@@ -21,29 +24,6 @@ const Search = () => {
         </div>
       </div>
     );
-      //     name="Login"
-      //     placeholder="Login"
-      //     value={Login}
-      //     onChange={(e) => setLogin(e.target.value)}
-      //     />
-      //     <div/>
-      //     <input type="password"
-      //     name="Password"
-      //     placeholder="Password"
-      //     value={Password}
-      //     onChange={(e) => setPassword(e.target.value)}
-      //     />
-      //     <div/>
-      //     <input type="text"
-      //     name="Tel"
-      //     placeholder="Tel"
-      //     value={Tel}
-      //     onChange={(e) => setTel(e.target.value)}
-      //     />
-      //     <div/>
-      //     <Button as="input" type="submit" value="Submit" />
-      //     </form>
-      //   </div>
   };
 
 export default Search;

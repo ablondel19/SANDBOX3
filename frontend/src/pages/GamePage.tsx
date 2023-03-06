@@ -22,7 +22,7 @@ function GamePage() {
         Navigate('/GameLost');
     });
     game.socket.on('GameWon', () => {
-            Navigate('/GameWon');
+        Navigate('/GameWon');
     });
 
     game.socket.on('GameDraw', () => {

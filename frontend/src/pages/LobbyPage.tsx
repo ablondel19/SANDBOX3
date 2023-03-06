@@ -24,7 +24,7 @@ function LobbyPage() {
         game.socket.emit('LeaveLobby')
     }
     const SpectateLobby = () => {
-            game.socket.emit('Spectate');
+        game.socket.emit('Spectate');
     }
     game.socket.on('Waiting Room', () => {
         Navigate('/RoomWaiting');
@@ -52,7 +52,7 @@ function LobbyPage() {
                         <Nav.Link onClick={joinLobby} className="title">Find Lobby</Nav.Link>
                     </div>
                     <div className="mc-button full">
-                        <Nav.Link as={Link} to="/Spectate" className="title">Spectate Lobby</Nav.Link>
+                        <Nav.Link onClick={SpectateLobby} className="title">Spectate Lobby</Nav.Link>
                     </div>
                 </div>
             </div>

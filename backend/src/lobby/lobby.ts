@@ -71,14 +71,9 @@ export class LobbyManager {
         throw new Error('Lobby not found or full');
     }
     LeaveLobby(login: string) {
-        const tLobby = this.LobbyList.find((lobby) => lobby.Players.includes(login));
-        const tLobbySpec = this.LobbyList.find((lobby) => lobby.Spectators.includes(login));
-        if (tLobbySpec)
-        {
-            const index = tLobbySpec.Spectators.indexOf(login);
-            if (index > -1)
-                tLobbySpec.Spectators.splice(index, 1);
-        }
+        let id = 0;
+        let tLobby = this.LobbyList.at(id);
+        //let tLobbySpec = this.LobbyList.at(id);
         if (tLobby)
         {
             const index = tLobby.Players.indexOf(login);
@@ -89,6 +84,8 @@ export class LobbyManager {
                     {
                         tLobby.socketing.get(tLobby.Instance.getInfo().Player2.name)?.emit("GameWon");
                         tLobby.socketing.get(tLobby.Instance.getInfo().Player1.name)?.emit("Disconnected");
+                        for (let i = 0; i < tLobby.Spectators.length; i++)
+                            tLobby.socketing.get(tLobby.Spectators[i])?.emit("SpectateResult", tLobby.Instance.getInfo().Player2.name);
                         console.log('Player 1 won');
 
                     }
@@ -96,11 +93,19 @@ export class LobbyManager {
                     {
                         tLobby.socketing.get(tLobby.Instance.getInfo().Player1.name)?.emit("GameWon");
                         tLobby.socketing.get(tLobby.Instance.getInfo().Player2.name)?.emit("Disconnected");
+                        for(let i = 0; i < tLobby.Spectators.length; i++)
+                            tLobby.socketing.get(tLobby.Spectators[0])?.emit("SpectateResult", tLobby.Instance.getInfo().Player1.name);
                         console.log('Player 2 won');
                     }
                     else
                         console.log("Draw");
                 }
+                // if (tLobbySpec)
+                // {
+                //     const index = tLobbySpec.Spectators.indexOf(login);
+                //     if (index > -1)
+                //         tLobbySpec.Spectators.splice(index, 1);
+                // }
                 tLobby.Players.splice(index, 1);
                 tLobby.socketing.delete(login);
                 tLobby.Instance.getInfo().Connected.splice(index, 1);
@@ -146,9 +151,11 @@ export class LobbyManager {
         let tLobby;
         tLobby = this.LobbyList.at(id);
         while (tLobby) {
-            if (tLobby && tLobby.Spectators.length < 2) {
+            if (tLobby) {
                 if (tLobby.Spectators.push(login)) {
                     tLobby.socketing.set(login, client);
+                    client.join(tLobby.id);
+                    tLobby.Instance.setRoom(this.Room);
                     return tLobby;
                 }
             }
