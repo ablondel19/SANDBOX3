@@ -13,10 +13,10 @@ const HomePage = () => {
                         <Nav.Link as={Link} to="/Lobby" className="title">Play</Nav.Link>
                     </div>
                     <div className="mc-button full">
-                        <Nav.Link as={Link} to="/Settings" className="title">Settings</Nav.Link>
+                        <Nav.Link as={Link} to="/Community" className="title">Community</Nav.Link>
                     </div>
                     <div className="mc-button full">
-                        <Nav.Link as={Link} to="/Sample" className="title">Sample</Nav.Link>
+                        <Nav.Link as={Link} to="/Profile" className="title">Profile</Nav.Link>
                     </div>
                 </div>
             </div>

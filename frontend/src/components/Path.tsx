@@ -17,6 +17,7 @@ import CreateLobbyPage from '../pages/CreateLobby';
 import CoPage from "../pages/CoPage";
 import SettingsPage from "../pages/SettingsPage";
 import { SpectateResult } from '../pages/GameResult';
+import CommunityPage from '../pages/Community';
 
 function Pathing(){
     return (
@@ -37,6 +38,7 @@ function Pathing(){
             <Route path='/Leaderboard' element={<LeaderboardPage/>}/>
             <Route path='/CreateLobby' element={<CreateLobbyPage/>}/>
             <Route path='/SpectateResult' element={<SpectateResult/>}/>
+            <Route path='/Community' element={<CommunityPage/>}/>
         </Routes>
     )
 }
