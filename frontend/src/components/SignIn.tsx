@@ -26,7 +26,13 @@ export const SignIn = () => {
         document.cookie = response.data;
         console.log('token = ', response.data);
         sessionStorage.setItem('currentUser', response.data.user.id);
-        navigate('/CoPage');
+        sessionStorage.setItem('currentUserLogin', response.data.user.login);
+        console.log('--->', sessionStorage.getItem('currentUserLogin'));
+        if (response.data.user.TFA === true) {
+          navigate('/Code2FA');
+        } else {
+          navigate('/CoPage');
+        }
       })
       .catch((err) => {
         console.log(err.response.data); // Invalid credentials

@@ -2,6 +2,7 @@ import {
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPhoneNumber,
   IsString,
   MaxLength,
@@ -45,6 +46,36 @@ export class UserResponseDto {
   @IsString()
   @IsNotEmpty()
   status: string;
+
+  @IsString()
+  @IsOptional()
+  @IsString()
+  @IsPhoneNumber()
+  @NotContains(' ')
+  phoneNumber?: string;
+}
+
+export class UserSignInDto {
+  @IsInt()
+  @IsNotEmpty()
+  id: number;
+
+  @IsString()
+  @IsNotEmpty()
+  login: string;
+
+  @IsString()
+  @IsNotEmpty()
+  status: string;
+
+  @IsString()
+  @IsOptional()
+  @IsString()
+  @IsPhoneNumber()
+  @NotContains(' ')
+  phoneNumber?: string;
+
+  TFA: boolean;
 }
 
 export class SignDto {
@@ -63,11 +94,11 @@ export class SignDto {
   password: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @IsPhoneNumber()
   @NotContains(' ')
-  phoneNumber: string;
+  phoneNumber?: string;
 }
 
 export class loginDto {
@@ -87,9 +118,6 @@ export class loginDto {
 }
 
 export class codeDto {
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(15)
   login: string;
 
   @IsString()

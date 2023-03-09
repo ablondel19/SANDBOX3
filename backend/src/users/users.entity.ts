@@ -23,7 +23,10 @@ export class User {
     this._password = value;
   }
 
-  @Column({ unique: true })
+  @Column({ default: false })
+  TFA: boolean;
+
+  @Column({ unique: true, nullable: true })
   phoneNumber: string;
 
   @Column({ default: 'offline' })

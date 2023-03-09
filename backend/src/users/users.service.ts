@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from './users.entity';
 import {
   LeadeBoardDto,
@@ -11,6 +11,7 @@ import {
   UserRelationDto,
   UserResponseDto,
   loginDto,
+  UserSignInDto,
 } from 'src/users/users.dto';
 import * as bcrypt from 'bcrypt';
 import { readFileSync } from 'graceful-fs';
@@ -66,7 +67,7 @@ export class UsersService {
   }
 
   async signUp(user: SignDto): Promise<any | null> {
-    console.log(`users.service: signUp(${user.login})`);
+    console.log(`users.service: signUp(${user})`);
     const salt = bcrypt.genSaltSync();
     const hash = bcrypt.hashSync(user.password, salt);
     const reqBody = {
@@ -74,6 +75,7 @@ export class UsersService {
       _password: hash,
       phoneNumber: user.phoneNumber,
       avatar: readFileSync(path.resolve('src/users/default.jpg')),
+      TFA: user.phoneNumber ? true : false,
     };
     const newUser = await this.userRepository.save(reqBody).catch((err) => {
       return [err.detail, err.code];
@@ -84,8 +86,8 @@ export class UsersService {
     return null;
   }
 
-  async signIn(user: loginDto): Promise<UserResponseDto | null> {
-    console.log(`users.service: signIn(${user.login})`);
+  async signIn(user: loginDto): Promise<UserSignInDto | null> {
+    console.log(`users.service: signIn(${user})`);
     const { login } = user;
     const foundUser = await this.userRepository.findOneBy({ login });
     if (foundUser) {
@@ -100,44 +102,10 @@ export class UsersService {
           id: foundUser.id,
           login: foundUser.login,
           status: foundUser.status,
+          TFA: foundUser.TFA,
+          phoneNumber: foundUser.phoneNumber,
         };
       }
-    }
-    return null;
-  }
-
-  async blockUser(data: UserRelationDto): Promise<UserResponseDto | null> {
-    console.log(`users.service: blockUser(${data.target})`);
-    const user = await this.getById(data.id);
-    if (user) {
-      user.blackList.push(data.target);
-      await this.userRepository.save(user).catch((err) => {
-        return err;
-      });
-      return {
-        id: user.id,
-        login: user.login,
-        status: user.status,
-      };
-    }
-    return null;
-  }
-
-  async unblockUser(data: UserRelationDto): Promise<UserResponseDto | null> {
-    console.log(`users.service: unblockUser(${data.target})`);
-    const user = await this.getById(data.id);
-    if (user) {
-      user.blackList = user.blackList.filter((value) => {
-        return value !== data.target;
-      });
-      await this.userRepository.save(user).catch((err) => {
-        return err;
-      });
-      return {
-        id: user.id,
-        login: user.login,
-        status: user.status,
-      };
     }
     return null;
   }
@@ -223,6 +191,26 @@ export class UsersService {
     return null;
   }
 
+  async getFriendList(friends: string[]): Promise<any> {
+    if (friends) {
+      const users = await this.userRepository.find({
+        where: {
+          login: In(friends),
+        },
+      });
+      const friendList = users.map((user) => {
+        const base64EncodedAvatar = Buffer.from(user.avatar).toString('base64');
+        return {
+          login: user.login,
+          status: user.status,
+          avatar: base64EncodedAvatar,
+        };
+      });
+      if (friendList) return friendList;
+    }
+    return null;
+  }
+
   async getProfile(userData: UserIdDto): Promise<ProfileDto | null> {
     const user = await this.getById(userData.id);
     if (user) {
@@ -238,7 +226,8 @@ export class UsersService {
   async updateLogin(user: User, newLogin: string): Promise<any> {
     if (user) {
       user.login = newLogin;
-      await this.userRepository.save(user).catch((err) => {
+      const updatedLogin = await this.userRepository.save(user).catch((err) => {
+        //console.log('ERROR: ', err);
         return err;
       });
       return user;

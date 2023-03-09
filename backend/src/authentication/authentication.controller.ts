@@ -45,7 +45,7 @@ export class AuthenticationController {
   @UseGuards(JwtAuthenticationGuard)
   @Get('who')
   who(@Req() req: any) {
-   return req.user;
+    return req.user;
   }
 
   @UseGuards(LocalAuthGuard)
@@ -60,13 +60,11 @@ export class AuthenticationController {
     return res.redirect('http://localhost:3000');
   }
 
-  
   @Post('signup')
   async signup(@Res() res: ExpressResponse, @Body() register: SignDto) {
     const user = await this.usersService.signUp(register);
     console.log('----->', user);
-    if (user[1] === '23505')
-      return res.status(400).send(user);
+    if (user[1] === '23505') return res.status(400).send(user);
     return res.status(201).send(user);
   }
 
@@ -74,23 +72,26 @@ export class AuthenticationController {
   async signIn(@Res() res: ExpressResponse, @Body() body: loginDto) {
     const user = await this.usersService.signIn(body);
     if (user) {
-      //const { phoneNumber } = user;
-      //const code = Math.floor(1000 + Math.random() * 9000);
-      // await this.tfaService.sendSms(
-      //   phoneNumber,
-      //   `Your verification code is: ${code}`,
-      // );
-      // await this.addToCache(body.login, Number(code).toString());
+      const { phoneNumber, TFA } = user;
+      if (TFA && phoneNumber) {
+        const code = Math.floor(1000 + Math.random() * 9000);
+        await this.tfaService.sendSms(
+          phoneNumber,
+          `Your verification code is: ${code}`,
+        );
+        await this.addToCache(body.login, Number(code).toString());
+      }
       const cookie = await this.authService.login(body);
       return res.status(200).send({ user, cookie });
     }
     return res.status(401).send(['Invalid credentials']);
   }
 
-  @UseGuards(JwtAuthenticationGuard)
+  //@UseGuards(JwtAuthenticationGuard)
   @Post('code')
   async tfaCode(@Res() res: ExpressResponse, @Body() body: codeDto) {
     const userCode = await this.getFromCache(body.login);
+    console.log(userCode);
     if (userCode.localeCompare(body.code) !== 0) {
       return res.status(401).send(['Invalid code provided']);
     }

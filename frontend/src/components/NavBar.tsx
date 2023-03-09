@@ -17,6 +17,7 @@ function ColorSchemesExample() {
               <Nav.Link as={Link} to="/Lobby"><GiRadarSweep/></Nav.Link>
               <Nav.Link as={Link} to="/leaderboard"><GiPodium/></Nav.Link>
               <Nav.Link as={Link} to="/Profile"><FaUserAlt/></Nav.Link>
+              <Nav.Link as={Link} to="/FriendList"><FaUserAlt/></Nav.Link>
               <Nav.Link as={Link} to="/"><FaRunning/></Nav.Link>
           </Nav>
         </Container>

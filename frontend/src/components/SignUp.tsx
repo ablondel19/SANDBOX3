@@ -9,6 +9,7 @@ export const SignUp = () => {
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [errors, setErrors] = useState();
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -16,7 +17,8 @@ export const SignUp = () => {
     const form = {
       login: formData.get('login'),
       password: formData.get('password'),
-      phoneNumber: formData.get('tel'),
+      twoFactorEnabled: twoFactorEnabled,
+      phoneNumber: twoFactorEnabled ? formData.get('tel') : undefined,
     };
     axios
       .post('http://localhost:3001/app/auth/signup', form)
@@ -56,15 +58,26 @@ export const SignUp = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <input
-              className="mc-button full"
-              type="tel"
-              name="tel"
-              maxLength={15}
-              placeholder="2FA phone number"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-            />
+            {twoFactorEnabled && (
+              <input
+                className="mc-button full"
+                type="tel"
+                name="tel"
+                maxLength={15}
+                placeholder="2FA phone number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+              />
+            )}
+            <label>
+              <input
+                type="checkbox"
+                name="twoFactor"
+                checked={twoFactorEnabled}
+                onChange={(e) => setTwoFactorEnabled(e.target.checked)}
+              />
+              Enable 2 Factor Authentication
+            </label>
           </div>
           <button className="mc-button full">SUBMIT</button>
           <div className="text-center">

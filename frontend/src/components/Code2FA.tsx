@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { DisplayErrors } from './DisplayErrors';
+import { useNavigate } from 'react-router-dom';
 
 export const Code2FA = () => {
+  const navigate = useNavigate();
   const [code, setCode] = useState('');
   const [errors, setErrors] = useState();
 
@@ -11,7 +13,7 @@ export const Code2FA = () => {
     const formData = new FormData(event.currentTarget);
     const form = {
       code: formData.get('code'),
-      login: localStorage.getItem('currentUser'),
+      login: sessionStorage.getItem('currentUserLogin'),
     };
     axios
       .post('http://localhost:3001/app/auth/code', form, {
@@ -19,10 +21,11 @@ export const Code2FA = () => {
       })
       .then((res) => {
         console.log(res);
+        navigate('/HomePage');
       })
       .catch((err) => {
         console.log(err);
-        setErrors(err.data);
+        setErrors(err.response.data);
       });
   };
 

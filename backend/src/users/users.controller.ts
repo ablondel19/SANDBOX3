@@ -5,9 +5,7 @@ import {
   Post,
   Req,
   Res,
-  Body,
   Param,
-  ParseIntPipe,
 } from '@nestjs/common';
 import {
   Response as ExpressResponse,
@@ -16,12 +14,18 @@ import {
 import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as multer from 'multer';
-import { UpdateProfileDto } from './users.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './users.entity';
 const storage = multer.memoryStorage();
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    private usersService: UsersService,
+  ) {}
 
   @Get('display')
   displayAll() {
@@ -43,16 +47,16 @@ export class UsersController {
       if (!['image/png', 'image/jpeg'].includes(req.file?.mimetype)) {
         return res
           .status(415)
-          .send(
-            ['The file type is not supported by the server. (png/jpeg/jpg only).'],
-          );
+          .send([
+            'The file type is not supported by the server. (png/jpeg/jpg only).',
+          ]);
       }
       if (req.file?.size > 100000) {
         return res
           .status(413)
-          .send(
-            ['The file size exceeds the maximum allowed size specified by the server. (100ko).'],
-          );
+          .send([
+            'The file size exceeds the maximum allowed size specified by the server. (100ko).',
+          ]);
       }
       await this.usersService.uploadFile(
         req.body?.user,
@@ -77,18 +81,21 @@ export class UsersController {
   }
 
   @Post('profile')
-  async getProfile(
-    @Req() req: ExpressRequest,
-    @Res() res: ExpressResponse,
-  ) {
+  async getProfile(@Req() req: ExpressRequest, @Res() res: ExpressResponse) {
     const user = await this.usersService.getById(req.body.id);
     if (user) {
       if (req.body.login) {
         const check = req.body.login as string;
         if (check.length < 4 || check.length > 15) {
-          return res.status(400).send(['Login should be between 4 and 15 characters long.']);
+          return res
+            .status(400)
+            .send(['Login should be between 4 and 15 characters long.']);
         }
-        await this.usersService.updateLogin(user, req.body.login);
+        user.login = req.body.login;
+        await this.userRepository.save(user).catch((err) => {
+          console.log(err.code, err.detail);
+          return res.status(401).send(['Login already in use.']);
+        });
       }
       const base64EncodedAvatar = Buffer.from(user.avatar).toString('base64');
       return res.status(200).send({
@@ -120,5 +127,20 @@ export class UsersController {
       return res.status(200).send(data);
     }
     return res.status(400).send(['Failed to request the leaderboard.']);
+  }
+
+  @Get('friendlist/:id')
+  async getFriends(@Param('id') id: string, @Res() res: ExpressResponse) {
+    console.log(`usersService.getFriends()`);
+    const user = await this.usersService.getById(Number.parseInt(id));
+    if (user) {
+      const data = await this.usersService.getFriendList(user.friendList);
+      if (data) {
+        return res.status(200).send(data);
+      } else {
+        return res.status(400).send(['You have no friends at the moment.']);
+      }
+    }
+    return res.status(400).send(['Failed to request the friends list.']);
   }
 }
