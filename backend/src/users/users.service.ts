@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { User } from './users.entity';
 import {
-  LeadeBoardDto,
   MatchHistoryDto,
   ProfileDto,
   SignDto,
@@ -226,8 +225,7 @@ export class UsersService {
   async updateLogin(user: User, newLogin: string): Promise<any> {
     if (user) {
       user.login = newLogin;
-      const updatedLogin = await this.userRepository.save(user).catch((err) => {
-        //console.log('ERROR: ', err);
+      await this.userRepository.save(user).catch((err) => {
         return err;
       });
       return user;
