@@ -1,42 +1,38 @@
-import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent, Subscription } from '@nestjs/graphql';
 import { Messages } from './entities/messages.entity';
 import { MessagesService } from './messages.service';
 import { AddMessageInput } from './dto/addmessage.input';
+import { PubSub } from 'graphql-subscriptions';
+
+const pubSub = new PubSub();
 
 @Resolver(() => Messages)
 export class MessagesResolver {
-  constructor(
-    private readonly messagesService: MessagesService,
-    ) {}
+  constructor(private readonly messagesService: MessagesService) {}
 
-    @Mutation(() => Messages)
-    addMessage(@Args('addMessageInput') addMessageInput: AddMessageInput) {
-      return this.messagesService.addMessage(addMessageInput);
-    }
+  @Mutation(() => Messages)
+  async addMessage(@Args('addMessageInput') addMessageInput: AddMessageInput): Promise<Messages> {
+    const newMessage = await this.messagesService.addMessage(addMessageInput);
+    pubSub.publish('messageAdded', { messageAdded: newMessage });
+    return newMessage;
+  }
 
-    @Query(() => [Messages], { name: 'getMessages' })
-    findChatLogsFromChat(@Args('uuid', { type: () => String }) uuid: string) {
-      return this.messagesService.getMessages(uuid);
-    }
+  @Query(() => [Messages], { name: 'getMessages' })
+  async findChatLogsFromChat(@Args('uuid', { type: () => String }) uuid: string): Promise<Messages[]> {
+    return this.messagesService.getMessages(uuid);
+  }
 
-    @Query(() => [Messages], { name: 'getAllMessages' })
-    findAll() {
-      return this.messagesService.findAll();
-    }
+  @Query(() => [Messages], { name: 'getAllMessages' })
+  async findAll(): Promise<Messages[]> {
+    return this.messagesService.findAll();
+  }
 
-  
-    // @Mutation(() => Messages)
-    // removeChat(@Args('uuid', { type: () => String }) uuid: string) {
-    //   return this.chatsService.remove(uuid);
-    // }
-  
-    // @Query(() => Boolean, { name: 'checkChatPassword' })
-    // checkPassword(
-    //   @Args('uuid', { type: () => String }) uuid: string,
-    //   @Args('password', { type: () => String }) password: string,
-    // ) {
-    //   return this.chatsService.checkPassword(uuid, password);
-    // }
-  
-
+  @Subscription(() => Messages, {
+    filter: (payload, variables) => {
+      return payload.messageAdded.chatId === variables.chatId;
+    },
+  })
+  messageAdded(@Args('chatId') chatId: string) {
+    return pubSub.asyncIterator('messageAdded');
+  }
 }

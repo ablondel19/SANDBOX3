@@ -86,4 +86,16 @@ mutation AddToChat($uuid : String!, $userID: String!) {
     userID
   }
 }
-`
+`;
+
+export const MESSAGE_ADDED_SUBSCRIPTION = gql`
+  subscription MessageAdded($chatId: String!) {
+    messageAdded(chatId: $chatId) {
+      id
+      message
+      createdAt
+      userID
+      chatId
+    }
+  }
+`;

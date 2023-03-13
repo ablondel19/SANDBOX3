@@ -8,7 +8,7 @@ import { client } from './apollo/apolloProvider';
 import { MantineProvider, createEmotionCache } from '@mantine/core';
 import Particles from 'react-particles';
 import { loadFull } from 'tsparticles';
-import { Chat } from './components/Chat/chat';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const particlesInit = async (main) => {

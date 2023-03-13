@@ -152,7 +152,7 @@ export const ListChat = ({ toggleShowCreate, chat_list, login, avatar }: any) =>
                                         elem.type === "private" &&
                                         <div style={{ padding: "5px" }}>
 
-                                            <Group>
+                                            <Group className='chat-group'>
                                                 <UnstyledButton
                                                     onClick={() => {
                                                         setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID });

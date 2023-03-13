@@ -1,3 +1,4 @@
+import { Field, ObjectType } from '@nestjs/graphql';
 import {
   IsInt,
   IsNotEmpty,
@@ -108,16 +109,21 @@ export class imgDto {
   type: string;
 }
 
+@ObjectType()
 export class MatchHistoryDto {
+  @Field()
   @IsString()
   opponent: string;
 
+  @Field()
   @IsInt()
   scoreX: number;
 
+  @Field()
   @IsInt()
   scoreY: number;
 
+  @Field()
   @IsString()
   map: string;
 }

@@ -22,6 +22,8 @@ import { MessagesModule } from './Messages/messages.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
+      playground: true,
+      installSubscriptionHandlers: true, // enable subscriptions
     }),
     TypeOrmModule.forRootAsync({
       imports: [

@@ -95,9 +95,6 @@ export class ChatsService {
     async findAvailableChats(userID: string, type : string) {
 
         let additionalWhereClause = ![undefined, null, ''].includes(type) ? ` AND "type"='${type}'` : '';
-        additionalWhereClause += ![undefined, null, ''].includes(userID)
-          ? ` AND '${userID}'=ANY("userID")`
-          : ` AND "type"!='dm'`;
 
         const chatList = await Chat.getRepository()
         .createQueryBuilder()
