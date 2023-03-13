@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsPhoneNumber,
+  isString,
   IsString,
   MaxLength,
   MinLength,
@@ -120,6 +121,23 @@ export class MatchHistoryDto {
 
   @IsString()
   map: string;
+}
+
+export class MatchResultDto {
+  @IsInt()
+  id: number;
+
+  @IsString()
+  Player1: string;
+
+  @IsString()
+  Player2: string;
+  
+  @IsInt()
+  scoreX: number;
+
+  @IsInt()
+  scoreY: number;
 }
 
 export class UserRelationDto {

@@ -75,6 +75,7 @@ class Ball
     }
 }
 
+
 export class gameInfo {
     Balling: Ball;
     Player1: Player;
