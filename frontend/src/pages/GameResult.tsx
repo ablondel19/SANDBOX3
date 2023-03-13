@@ -10,7 +10,7 @@ function GameWon(props:MatchResultDto) {
 
     return (
         <div>
-            <h1>You Won vs {props.Player2} : {props.scoreX - props.scoreY} </h1>
+            <h1>You Won vs {props.Player2} : {props.scoreX} - {props.scoreY} </h1>
             <button onClick={() => Navigate('/HomePage')}>Back to Main Menu</button>
         </div>
     );
@@ -20,7 +20,7 @@ function GameLost(props:MatchResultDto) {
     const Navigate = useNavigate();
     return (
         <div>
-            <h1>You Lost vs {props.Player2} : {props.scoreX - props.scoreY} </h1>
+            <h1>You Lost vs {props.Player2} : {props.scoreX} - {props.scoreY} </h1>
             <button onClick={() => Navigate('/HomePage')}>Back to Main Menu</button>
         </div>
     );

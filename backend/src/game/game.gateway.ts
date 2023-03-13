@@ -144,6 +144,16 @@ export class GameGateway {
         console.log(`${client.data.username} has been disconnected`);
     }
 
+    @SubscribeMessage('EndGame')
+    handleEndGame(
+        @MessageBody() data: string,
+        @ConnectedSocket() client: Socket,
+    ): any {
+        if (!client || client === undefined)
+            return ;
+        this.LobbyManager.EndGame(client.data.username);
+    }
+
     @SubscribeMessage('LobbyInfo')
     handleLobbyInfo(
         @MessageBody() data: string,

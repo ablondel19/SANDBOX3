@@ -51,11 +51,16 @@ function GamePage() {
             setWon(false);
         });
 
-        game.socket.on('GameWon',(info:MatchResultDto) => {
+        game.socket.on('GameWon', (info:MatchResultDto) => {
             setLost(false);
             setInfo(info);
             setWon(true);
         });
+        game.socket.on('EndGame', () => {
+            console.log("ihihihihihi");
+            game.socket.emit('EndGame');
+        });
+
         return () => {
             game.socket.off('GameWon');
             game.socket.off('GameLost');

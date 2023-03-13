@@ -2,6 +2,7 @@ import io from 'socket.io-client';
 import { Gaming } from '../Canvas';
 import {Server, Socket} from 'socket.io';
 import { MatchResultDto } from '../users/users.dto';
+import { isConstructorDeclaration } from 'typescript';
 
 class Lobby {
     id: string;
@@ -85,47 +86,63 @@ export class LobbyManager {
         let tLobby = this.LobbyList.at(id);
         if (tLobby)
         {
-
             const index = tLobby.Players.indexOf(login);
             if (index > -1) {
-                if (tLobby.Instance.Disconnect(login) === "STOP")
-                {
-                    if (tLobby.Instance.getInfo().Player1.name === login)
-                    {
-                        tLobby.socketing.get(tLobby.Instance.getInfo().Player2.name)?.emit("GameWon", this.CreateMatchResult(tLobby.Instance.getInfo().Player2.name, tLobby.Instance.getInfo().Player1.name, tLobby.Instance.getInfo().Player2.score, tLobby.Instance.getInfo().Player1.score));
+                if (tLobby.Instance.getInfo().Player1.name === login) {
+                    if (tLobby.Instance.Disconnect(login) === "STOP")
                         tLobby.socketing.get(tLobby.Instance.getInfo().Player1.name)?.emit("Disconnected");
-                        for (let i = 0; i < tLobby.Spectators.length; i++)
-                            tLobby.socketing.get(tLobby.Spectators[i])?.emit("SpectateResult", tLobby.Instance.getInfo());
-                        console.log('Player 1 won');
-
-                    }
-                    else if (tLobby.Instance.getInfo().Player2.name === login)
-                    {
-                        tLobby.socketing.get(tLobby.Instance.getInfo().Player1.name)?.emit("GameWon", this.CreateMatchResult(tLobby.Instance.getInfo().Player1.name, tLobby.Instance.getInfo().Player2.name, tLobby.Instance.getInfo().Player1.score, tLobby.Instance.getInfo().Player2.score));
-                        tLobby.socketing.get(tLobby.Instance.getInfo().Player2.name)?.emit("Disconnected");
-                        for(let i = 0; i < tLobby.Spectators.length; i++)
-                            tLobby.socketing.get(tLobby.Spectators[0])?.emit("SpectateResult", tLobby.Instance.getInfo().Player1.name);
-                        console.log('Player 2 won');
-                    }
                     else
-                        console.log("Draw");
+                        tLobby.socketing.get(tLobby.Instance.getInfo().Player1.name)?.emit("GameLost", this.CreateMatchResult(tLobby.Instance.getInfo().Player2.name, tLobby.Instance.getInfo().Player1.name, tLobby.Instance.getInfo().Player2.score, tLobby.Instance.getInfo().Player1.score));
+                    tLobby.socketing.get(tLobby.Instance.getInfo().Player2.name)?.emit("GameWon", this.CreateMatchResult(tLobby.Instance.getInfo().Player2.name, tLobby.Instance.getInfo().Player1.name, tLobby.Instance.getInfo().Player2.score, tLobby.Instance.getInfo().Player1.score));
+                    for (let i = 0; i < tLobby.Spectators.length; i++)
+                        tLobby.socketing.get(tLobby.Spectators[i])?.emit("SpectateResult", tLobby.Instance.getInfo());
+                    console.log('Player 1 won');
                 }
-                // if (tLobbySpec)
-                // {
-                //     const index = tLobbySpec.Spectators.indexOf(login);
-                //     if (index > -1)
-                //         tLobbySpec.Spectators.splice(index, 1);
-                // }
-                tLobby.Players.splice(index, 1);
-                tLobby.socketing.delete(login);
-                tLobby.Instance.getInfo().Connected.splice(index, 1);
-                if (tLobby.Ready.includes(login))
-                    tLobby.Ready.splice(index, 1);
-                this.LobbyList.splice(this.LobbyList.indexOf(tLobby), 1);
+                else if (tLobby.Instance.getInfo().Player2.name === login) {
+                    if (tLobby.Instance.Disconnect(login) === "STOP")
+                        tLobby.socketing.get(tLobby.Instance.getInfo().Player2.name)?.emit("Disconnected");
+                    else
+                    tLobby.socketing.get(tLobby.Instance.getInfo().Player2.name)?.emit("GameLost", this.CreateMatchResult(tLobby.Instance.getInfo().Player1.name, tLobby.Instance.getInfo().Player2.name, tLobby.Instance.getInfo().Player1.score, tLobby.Instance.getInfo().Player2.score));
+                    tLobby.socketing.get(tLobby.Instance.getInfo().Player1.name)?.emit("GameWon", this.CreateMatchResult(tLobby.Instance.getInfo().Player1.name, tLobby.Instance.getInfo().Player2.name, tLobby.Instance.getInfo().Player1.score, tLobby.Instance.getInfo().Player2.score));
+                    for(let i = 0; i < tLobby.Spectators.length; i++)
+                        tLobby.socketing.get(tLobby.Spectators[0])?.emit("SpectateResult", tLobby.Instance.getInfo().Player1.name);
+                    console.log('Player 2 won');
+                }
+                else
+                    console.log("Draw");
             }
+            tLobby.Players.splice(index, 1);
+            tLobby.socketing.delete(login);
+            tLobby.Instance.getInfo().Connected.splice(index, 1);
+            if (tLobby.Ready.includes(login))
+                tLobby.Ready.splice(index, 1);
+            this.LobbyList.splice(this.LobbyList.indexOf(tLobby), 1);
         }
     }
-
+    EndGame(login: string) {
+        let id = 0;
+        let tLobby = this.LobbyList.at(id);
+        if (tLobby)
+        {
+            if (tLobby.Instance.getInfo().Player1.score === 7 && tLobby.Instance.getInfo().Player1.name === login) {
+                tLobby.socketing.get(tLobby.Instance.getInfo().Player1.name)?.emit("GameWon", this.CreateMatchResult(tLobby.Instance.getInfo().Player1.name, tLobby.Instance.getInfo().Player2.name, tLobby.Instance.getInfo().Player1.score, tLobby.Instance.getInfo().Player2.score));
+                tLobby.socketing.get(tLobby.Instance.getInfo().Player2.name)?.emit("GameLost", this.CreateMatchResult(tLobby.Instance.getInfo().Player1.name, tLobby.Instance.getInfo().Player2.name, tLobby.Instance.getInfo().Player1.score, tLobby.Instance.getInfo().Player2.score));
+                for (let i = 0; i < tLobby.Spectators.length; i++)
+                    tLobby.socketing.get(tLobby.Spectators[i])?.emit("SpectateResult", tLobby.Instance.getInfo());
+                console.log('Player 1 won');
+            }
+            else if (tLobby.Instance.getInfo().Player2.score === 7 && tLobby.Instance.getInfo().Player2.name === login) {
+                tLobby.socketing.get(tLobby.Instance.getInfo().Player2.name)?.emit("GameWon", this.CreateMatchResult(tLobby.Instance.getInfo().Player2.name, tLobby.Instance.getInfo().Player1.name, tLobby.Instance.getInfo().Player2.score, tLobby.Instance.getInfo().Player1.score));
+                tLobby.socketing.get(tLobby.Instance.getInfo().Player1.name)?.emit("GameLost", this.CreateMatchResult(tLobby.Instance.getInfo().Player2.name, tLobby.Instance.getInfo().Player1.name, tLobby.Instance.getInfo().Player2.score, tLobby.Instance.getInfo().Player1.score));
+                for (let i = 0; i < tLobby.Spectators.length; i++)
+                    tLobby.socketing.get(tLobby.Spectators[i])?.emit("SpectateResult", tLobby.Instance.getInfo());
+                console.log('Player 2 won');
+            }
+            else
+                return;
+                
+        }
+    }
 
     printLobby() {
         console.log(this.LobbyList);
@@ -191,5 +208,4 @@ export class LobbyManager {
                 tLobby.Spectators.splice(index, 1);
         }
     }
-
 }
