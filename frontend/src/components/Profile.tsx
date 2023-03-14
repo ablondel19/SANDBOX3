@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { DisplayErrors } from './DisplayErrors';
+import { Card, Progress, Notification } from '@mantine/core';
+import { AiFillEdit } from 'react-icons/ai';
 
 export const Profile = () => {
   const [avatar, setAvatar] = useState<string>();
@@ -77,24 +79,42 @@ export const Profile = () => {
   };
 
   return (
-    <div>
-      <div>
-        <input
-          type="text"
-          name="login"
-          placeholder="Choose a new login"
-          value={login || ''}
-          onChange={(e) => setLogin(e.target.value)}
-        />
-        <input type="file" name="file" onChange={handleChange} />
-        <img
-          src={`data:image/jpeg;base64,${avatar}`}
-          alt=""
-          style={{ height: '5%', width: '5%' }}
-        />
-        <button onClick={handleProfile}>Update profile</button>
-        <DisplayErrors errors={errors} />
+    <Card shadow="sm" p="lg" radius="md" className='card' withBorder>
+      <h1 className="card-title text-center">Profile</h1>
+      <div className='card-profile'>
+        <div className="profile-pic">
+          <label className="-label" htmlFor="file">
+            <AiFillEdit className='edit-icon-react'></AiFillEdit>
+          </label>
+          <input id="file" type="file" onChange={handleChange} />
+          <img src={`data:image/jpeg;base64,${avatar}`} id="output" width="200" />
+        </div>
+        <div className="user-info">
+          <h2>John Smith</h2>
+          <p>Rank: 30th</p>
+          <Progress size="lg" value={1}/> 
+        </div>
       </div>
-    </div>
+
+      <ul className="match-list">
+        <li>
+          <span className="team-name">Team A</span>
+          <span className="team-score win">2</span>
+          <span className="vs">vs</span>
+          <span className="team-score lose">1</span>
+          <span className="team-name">Team B</span>
+        </li>
+        <li>
+          <span className="team-name">Team C</span>
+          <span className="team-score lose">0</span>
+          <span className="vs">vs</span>
+          <span className="team-score win">3</span>
+          <span className="team-name">Team D</span>
+        </li>
+      </ul>
+
+      <DisplayErrors errors={errors} />
+
+    </Card>
   );
 };

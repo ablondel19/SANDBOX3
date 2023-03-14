@@ -90,6 +90,7 @@ export class gameInfo {
         this.Balling = new Ball((widths), (heights), 10, 10, 5, 0, 'red');
         this.Player1 = new Player(0, 500, 20, 100, '#1542d3', 0, 0, heights, 10);
         this.Player2 = new Player(widths - 20, (heights / 2), 20, 100, '#05f315', 0, 0, heights, 10);
+
     }
     resetCanvas() {
         this.Running = false;
