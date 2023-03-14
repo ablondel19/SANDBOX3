@@ -113,6 +113,19 @@ export class UsersController {
     }
   }
 
+  @Get('avatar/:id')
+  async getAvatar(@Param('id') id: string, @Res() res: ExpressResponse) {
+    const user = await this.usersService.getByLogin(id);
+    if (user) {
+      const base64EncodedAvatar = Buffer.from(user.avatar).toString('base64');
+      return res.status(200).send({
+        avatar: base64EncodedAvatar,
+        login: user.login,
+        status: user.status,
+      });
+    }
+  }
+
   @Get('leaderboard')
   async getLeaders(@Res() res: ExpressResponse) {
     const data = await this.usersService.getLeaderboard();

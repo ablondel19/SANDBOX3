@@ -77,57 +77,62 @@ const ListMsg = ({ data, setShowMessages, login, avatar }: any) => {
                     showMembers ?
                         <MemberList data={data} avatar={avatar} login={login}></MemberList>
                         :
+                        <>
+                            {
 
-                        listmsg.data && listmsg.data.getMessages[0] ?
-                            <>
-                                <ScrollArea style={{ height: 450 }} scrollbarSize={0}>
+                                listmsg.data && listmsg.data.getMessages[0] ?
+                                    <>
+                                        <ScrollArea style={{ height: 450 }} scrollbarSize={0}>
 
-                                    {
-                                        listmsg.data && listmsg.data.getMessages.map((elem: { message: string, userID: string, createdAt: Date }) => {
                                             {
-                                                return (
-                                                    <div className="message">
-                                                        {
-                                                            elem.userID === login ?
-                                                                <>
-                                                                    <Avatar size={40} color="blue" src={`data:image/jpeg;base64,${avatar}`}></Avatar>
-                                                                    <div className="text">
-                                                                        <p>{elem.message}</p>
-                                                                    </div>
+                                                listmsg.data && listmsg.data.getMessages.map((elem: { message: string, userID: string, createdAt: Date }) => {
+                                                    {
+                                                        return (
+                                                            <div className="message">
+                                                                {
+                                                                    elem.userID === login ?
+                                                                        <>
+                                                                            <Avatar size={40} color="blue" src={`data:image/jpeg;base64,${avatar}`}></Avatar>
+                                                                            <div className="text">
+                                                                                <p>{elem.message}</p>
+                                                                            </div>
 
-                                                                </>
+                                                                        </>
 
-                                                                :
+                                                                        :
 
-                                                                <>
-                                                                    <div className="text">
-                                                                        <p>{elem.message}</p>
-                                                                    </div>
-                                                                    <Avatar size={40} color="blue" src={`data:image/jpeg;base64,${avatar}`}></Avatar>
+                                                                        <>
+                                                                            <div className="text">
+                                                                                <p>{elem.message}</p>
+                                                                            </div>
+                                                                            <Avatar size={40} color="blue" src={`data:image/jpeg;base64,${avatar}`}></Avatar>
 
-                                                                </>
+                                                                        </>
 
-                                                        }
-                                                    </div>
-                                                )
+                                                                }
+                                                            </div>
+                                                        )
+                                                    }
+                                                })
                                             }
-                                        })
-                                    }
-                                    <div ref={messagesEndRef} />
-                                </ScrollArea>
-                            </>
+                                            <div ref={messagesEndRef} />
+                                        </ScrollArea>
+                                    </>
 
-                            :
-                            <>
-                                <Text
-                                    c="dimmed"
-                                    size={15}
-                                >No messages have been send.</Text>
-                            </>
+                                    :
+                                    <>
+                                        <Text
+                                            c="dimmed"
+                                            size={15}
+                                        >No messages have been send.</Text>
+                                    </>
+                            }
+                            <ChatBox uuid={data.uuid} refetch={listmsg.refetch} login={login}></ChatBox>
+
+                        </>
 
 
                 }
-                <ChatBox uuid={data.uuid} refetch={listmsg.refetch} login={login}></ChatBox>
             </div>
         </>
     );

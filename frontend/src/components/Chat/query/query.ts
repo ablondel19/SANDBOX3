@@ -99,3 +99,11 @@ export const MESSAGE_ADDED_SUBSCRIPTION = gql`
     }
   }
 `;
+
+export const GET_USERS = gql`
+  query GetUsers {
+    user {
+      login
+    }
+  }
+`;

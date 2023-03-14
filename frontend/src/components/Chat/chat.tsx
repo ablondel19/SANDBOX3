@@ -70,7 +70,8 @@ export const Chat = () => {
                     <Card
                     withBorder
                         sx={(theme) => ({
-                            width: 300,
+                            minWidth: 300,
+                            maxWidth: 500,
                             height: 600,
                             backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
                             borderRadius: 15,

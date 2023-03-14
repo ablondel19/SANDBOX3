@@ -168,16 +168,13 @@ export const ListChat = ({ toggleShowCreate, chat_list, login, avatar }: any) =>
                                                     elem.ownerID === login &&
                                                     <Group>
                                                         <ActionIcon
-
                                                             onClick={() => onRemoveHandler({ variables: { uuid: elem.uuid } })}
                                                         ><AiOutlineDelete size={20} color="red"></AiOutlineDelete></ActionIcon>
                                                         <ActionIcon
                                                             onClick={() => {
                                                                 setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID });
                                                                 setShowEdit(true);
-
-                                                            }
-                                                            }
+                                                            }}
                                                         ><AiOutlineSetting size={20}></AiOutlineSetting></ActionIcon>
                                                     </Group>
                                                 }
@@ -186,6 +183,10 @@ export const ListChat = ({ toggleShowCreate, chat_list, login, avatar }: any) =>
                                     )
                                 })
                             }
+
+
+                            <h4>direct messages</h4>
+                            <Divider my="sm" />
                         </ScrollArea>
 
                         <Button

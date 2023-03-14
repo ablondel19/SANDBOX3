@@ -122,15 +122,15 @@ export class ChatsService {
         return chat;
     }
 
-    async kick(uuid: string, userID: string) {
-        const chat = await this.checkUserIsInChat(uuid, userID);
+    // async kick(uuid: string, userID: string) {
+    //     const chat = await this.findOne(uuid);
 
-        chat.userID = chat.userID.filter((item) => item !== userID);
-        return await Chat.save(chat);
-      }
+    //     chat.userID = chat.userID.filter((item) => item !== userID);
+    //     return await Chat.save(chat);
+    //   }
 
     async toggleMute(uuid: string, userID: string) {
-        const chat = await this.checkUserIsInChat(uuid, userID);
+        const chat = await this.findOne(uuid);
 
         chat.muteID = chat.muteID.includes(userID)
         ? chat.muteID.filter((item) => item !== userID)
@@ -139,7 +139,7 @@ export class ChatsService {
     }
 
     async toggleAdmin(uuid: string, userID: string) {
-        const chat = await this.checkUserIsInChat(uuid, userID);
+        const chat = await this.findOne(uuid);
 
         chat.adminID = chat.adminID.includes(userID)
         ? chat.adminID.filter((item) => item !== userID)
@@ -147,14 +147,14 @@ export class ChatsService {
         return await Chat.save(chat);
     }
 
-    async addToChat(uuid: string, userID: string) {
-        const chat = await this.findOne(uuid);
+    // async addToChat(uuid: string, userID: string) {
+    //     const chat = await this.findOne(uuid);
 
-        chat.userID = chat.userID.includes(userID)
-        ? chat.userID.filter((item) => item !== userID)
-        : [...chat.userID, userID];
-        return await Chat.save(chat);
-    }
+    //     chat.userID = chat.userID.includes(userID)
+    //     ? chat.userID.filter((item) => item !== userID)
+    //     : [...chat.userID, userID];
+    //     return await Chat.save(chat);
+    // }
 
 
     async sendDM(originID : string, destID: string) {

@@ -2,7 +2,7 @@
 
 import { gql, useLazyQuery, useMutation } from '@apollo/client';
 import { useQuery } from '@apollo/react-hooks';
-import { Alert, Avatar, Group, UnstyledButton, Text, ScrollArea, ActionIcon, Button, TextInput, Loader, Navbar, Card } from "@mantine/core";
+import { Alert, Avatar, Divider, Group, UnstyledButton, Text, ScrollArea, ActionIcon, Button, TextInput, Loader, Navbar, Card, Popover } from "@mantine/core";
 import { useState, useEffect } from 'react';
 import { AiFillSetting, AiOutlineAudioMuted, AiOutlineDelete, AiOutlineSetting } from 'react-icons/ai';
 import { GrUpgrade } from 'react-icons/gr';
@@ -11,47 +11,39 @@ import { IoMdClose, IoMdExit } from 'react-icons/io';
 import { BiBlock } from 'react-icons/bi';
 import { RiVipCrownFill } from 'react-icons/ri';
 import Popup from 'reactjs-popup';
-import { MUTE, UPDATE_CHAT, KICK, ADMIN, ADDTOCHAT } from '../query/query';
+import { MUTE, UPDATE_CHAT, KICK, ADMIN, ADDTOCHAT, GET_USERS } from '../query/query';
 import axios from 'axios';
 
 
-export const MemberList = ({ data, avatar, login }: any) => {
-    let usersInfo = {
-        login: String,
+export const MemberList = ({ data, login }: any) => {
+    const [usersInfo, setUsersInfo] = useState([]);
 
-    }
+    useQuery(GET_USERS, {
+        onCompleted: async (data) => {
+            const users = data.user;
+            const usersInfo = [];
 
-    const [showAddUser, setShowAddUser] = useState(false);
-    const [input, setInput] = useState('');
-    const [usersList, setUsersList] = useState([usersInfo]);
+            for (let i = 0; i < users.length; i++) {
+                const user = users[i];
+                const userInfo = {
+                    login: user.login,
+                    avatar: null,
+                };
 
-    useEffect(() => {
-        const fetchAvatar = async () => {
-          await axios
-            .get(
-              `http://localhost:3001/app/users/display`,
-            )
-            .then((res) => {
-                res.data.forEach((elem) => {
-                    let usersInfo = {
-                        login: elem.login,
-                        // status: elem.status,
-                        // avatar: elem.avatar
-                    }
-                    console.log(usersInfo);
-                    setUsersList([...usersList, usersInfo]);
-                })
-                console.log(usersList);
-            })
-            .catch((err) => {
-              console.error(err.response.data);
-            //   setErrors(err.response.data);
-            });
-        };
-        setUsersList(null);
-        fetchAvatar();
-      }, []);
-    
+                try {
+                    const response = await axios.get(`http://localhost:3001/app/users/avatar/${user.login}`);
+                    userInfo.avatar = response.data.avatar;
+                } catch (error) {
+                    console.log(error);
+                }
+
+                usersInfo.push(userInfo);
+            }
+
+            setUsersInfo(usersInfo);
+        },
+    });
+
 
     const [mute] = useMutation(MUTE, {
         onCompleted: () => {
@@ -59,11 +51,6 @@ export const MemberList = ({ data, avatar, login }: any) => {
         },
     });
 
-    const [kick] = useMutation(KICK, {
-        onCompleted: () => {
-            // chat_list.refetch()
-        },
-    });
 
     const [promote] = useMutation(ADMIN, {
         onCompleted: () => {
@@ -71,112 +58,72 @@ export const MemberList = ({ data, avatar, login }: any) => {
         },
     });
 
-    const [add] = useMutation(ADDTOCHAT, {
-        onCompleted: () => {
-            // chat_list.refetch()
-        },
-    });
-
     return (
         <>
-            <Popup
-                open={showAddUser}
-                onClose={() => setShowAddUser(false)}
-                position="top center"
-                nested
-                modal
-            >
-                <Card
-                    withBorder
-                    sx={{
-                        borderRadius: 15,
-                    }}
-                    style={{
-                        padding: 15,
-                        position: 'absolute',
-                        height: 120,
-                        width: 250,
-                    }}
-                >
-                    <form>
-                        <ActionIcon
-                            onClick={() => setShowAddUser(false)}
-                            style={{
-                                position: 'absolute',
-                                top: 5,
-                                right: 5,
-                            }}
-                        ><IoMdClose size={15}></IoMdClose>
-                        </ActionIcon>
-
-                        <TextInput
-                            label="Password :"
-                            placeholder="your password.."
-                            onChange={e => setInput(e.target.value)}
-                        >
-
-                        </TextInput>
-
-                        <Button onClick={() => add({
-                            variables: {
-                                uuid: data.uuid,
-                                userID: input,
-                            }
-                        })}
-
-                        >Confirm</Button>
-                    </form>
-
-                </Card>
-            </Popup>
             <ScrollArea style={{ height: 450 }} scrollbarSize={8}>
 
                 {
-                    data.userID && data.userID.map((elem: string) => {
+                    usersInfo.map((userInfo) => {
                         return (
-                            <div style={{ padding: "5px" }}>
-                                <Group>
-                                    <Avatar src={`data:image/jpeg;base64,${avatar}`}></Avatar>
-                                    <Text>{elem}</Text>
-                                    {
-                                        elem == data.ownerID &&
-                                            <RiVipCrownFill color='orange'></RiVipCrownFill>
-                                    }
-                                    {
-                                        data.ownerID == login && elem != data.ownerID &&
-                                        <>
-                                            <ActionIcon
-                                                onClick={() => mute({
-                                                    variables: {
-                                                        uuid: data.uuid,
-                                                        userID: elem,
-                                                    }
-                                                })}
-                                            ><GrUpgrade size={20} color="green"></GrUpgrade></ActionIcon>
-                                            <ActionIcon
-                                                onClick={() => kick({
-                                                    variables: {
-                                                        uuid: data.uuid,
-                                                        userID: elem,
-                                                    }
-                                                })}
-                                            ><BiBlock size={20} color="red"></BiBlock></ActionIcon>
-                                            <ActionIcon
-                                                onClick={() => promote({
-                                                    variables: {
-                                                        uuid: data.uuid,
-                                                        userID: elem,
-                                                    }
-                                                })}
-                                            ><IoMdExit size={20} color="red"></IoMdExit></ActionIcon>
-                                        </>
-                                    }
+                                <Group style={{ padding: "5px" }}>
+                                    <Popover position="bottom" withArrow shadow="md">
+                                        <Popover.Target>
+                                            <Group>
+                                                <Avatar src={`data:image/jpeg;base64,${userInfo.avatar}`}></Avatar>
+                                                <Text>{userInfo.login}</Text>
+                                                {
+                                                    userInfo.login === data.ownerID &&
+                                                    <RiVipCrownFill color='orange'></RiVipCrownFill>
+
+                                                    
+                                                }
+                                                {
+                                                    data.adminID.includes(userInfo.login) &&
+                                                    <RiVipCrownFill color='orange'></RiVipCrownFill>
+
+                                                    
+                                                }
+                                            </Group>
+                                        </Popover.Target>
+
+                                            {
+                                                userInfo.login !== data.ownerID &&
+                                                    <Popover.Dropdown>
+                                                            <div>
+                                                                <Group>
+                                                                    <ActionIcon
+                                                                        onClick={() => promote({
+                                                                            variables: {
+                                                                                uuid: data.uuid,
+                                                                                userID: userInfo.login,
+                                                                            }
+                                                                        })}
+                                                                    ><GrUpgrade size={20} color="blue"></GrUpgrade></ActionIcon>
+                                                                    <Text>Promote</Text>
+                                                                </Group>
+                                                                <Group>
+
+                                                                <ActionIcon
+                                                                    onClick={() => mute({
+                                                                        variables: {
+                                                                            uuid: data.uuid,
+                                                                            userID: userInfo.login,
+                                                                        }
+                                                                    })}
+                                                                ><BiBlock size={20} color="red"></BiBlock></ActionIcon>
+                                                                    <Text>Block</Text>
+                                                                </Group>
+                                                            </div>
+                                                    </Popover.Dropdown>
+                                            }
+
+
+                                    </Popover>
+
                                 </Group>
-                            </div>
                         )
                     })
                 }
-
             </ScrollArea>
         </>
     )

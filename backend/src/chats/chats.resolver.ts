@@ -67,13 +67,6 @@ export class ChatsResolver {
       return this.chatsService.toggleMute(uuid, userID);
     }
   
-    @Mutation(() => Chat)
-    forcedOut(
-      @Args('uuid', { type: () => String }) uuid: string,
-      @Args('userID', { type: () => String }) userID: string,
-    ) {
-      return this.chatsService.kick(uuid, userID);
-    }
   
     @Mutation(() => Chat)
     toggleAdmin(
@@ -83,14 +76,6 @@ export class ChatsResolver {
       return this.chatsService.toggleAdmin(uuid, userID);
     }
   
-    @Mutation(() => Chat)
-    addToChat(
-      @Args('uuid', { type: () => String }) uuid: string,
-      @Args('userID', { type: () => String }) userID: string,
-    ) {
-      return this.chatsService.addToChat(uuid, userID);
-    }
-
     // @Mutation(() => Chat)
     // createDM(
     //   @Args('user1', { type: () => String }) origUserID: string,
