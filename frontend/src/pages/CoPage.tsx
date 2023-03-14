@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Gaming } from '../components/Canvas';
-import HomePage from './All';
+import HomePage from './HomePage';
 import { ReactNotifications, Store } from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 import { TIMEOUT } from 'dns';
@@ -34,7 +34,7 @@ function CoPage(){
         game.socket.disconnect();
         game.socket = null;
     }
-    
+
     game.socketInit();
     const navigate = useNavigate();
 

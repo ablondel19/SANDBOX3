@@ -18,11 +18,11 @@ export const Leaderboard = () => {
     <div>
         <ul>
           {leaderboard && leaderboard.map((item) => (
-            <li key={item[0]}>
+            <h4 key={item[0]}>
               <p>
-                Login: {item[0]} Victories {item[1]} Rank: {item[2]}
+              Rank  [{item[2]}] - {item[0]} : Victories {item[1]}
               </p>
-            </li>
+            </h4>
           ))}
         </ul>
     </div>

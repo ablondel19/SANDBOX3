@@ -6,11 +6,11 @@ import { game } from "./CoPage";
 
 const HomePage = () => {
 
-    if (game.socket)
-    {
+    if (game.socket) {
         console.log("Home Page :)");
         game.socket.emit('isWaiting');
     }
+
     return (
         <div>
             <Navb/>

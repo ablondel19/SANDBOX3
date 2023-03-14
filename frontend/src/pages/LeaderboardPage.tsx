@@ -1,13 +1,35 @@
 import { Leaderboard } from '../components/Leaderboard';
 import Nav from '../components/NavBar';
+import {game} from './CoPage';
+import "../assets/Leadb.css"
 
 function LeaderboardPage() {
-  return (
-    <div>
+    if (game.socket) {
+        console.log("Home Page :)");
+        game.socket.emit('isWaiting');
+    }
+
+    const LeaderboardHeader = () => {
+      return (
+        <div className="leadheader">
+            <h2>Leaderboard</h2>
+        </div>
+      )
+    }
+    const ColumnHeader = () => (
+      <div className="row colheader">
+          <Leaderboard />
+        </div>
+    ); 
+
+    return (
+      <div>
         <Nav />
-        <h1>Leaderboard</h1>
-        <Leaderboard />
-    </div>
+        <div className='container'>
+          <LeaderboardHeader />
+          <ColumnHeader/>
+        </div>
+      </div>
   )
 }
 

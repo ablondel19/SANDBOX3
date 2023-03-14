@@ -7,6 +7,11 @@ import {Route, Routes, Link, Router} from "react-router-dom";
 
 function LobbyPage() {
 
+    if (game.socket)
+    {
+        console.log("Home Page :)");
+        game.socket.emit('isWaiting');
+    }
     const Navigate = useNavigate();
     const click = () => {
         axios.get('http://localhost:3001/app/auth/who', {
