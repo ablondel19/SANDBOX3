@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DisplayErrors } from './DisplayErrors';
+import { ReactNotifications, Store } from 'react-notifications-component'
+import 'react-notifications-component/dist/theme.css'
 
 export const SignIn = () => {
   const [login, setLogin] = useState('');
@@ -30,41 +32,55 @@ export const SignIn = () => {
         navigate('/CoPage');
       })
       .catch((err) => {
-        console.log(err.response.data); // Invalid credentials
-        setErrors(err.response.data);
+        Store.addNotification({
+          title: "Error",
+          message: "Invalid credentials",
+          type: "danger",
+          insert: "top",
+          container: "top-right",
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 3000,
+            onScreen: true
+          }
+        })
       });
   };
 
   return (
-    <div className="flex-container">
-      <div>
-        <h1 className="text-center">SIGNIN</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="mc-menu">
-            <input
-              className="mc-button full"
-              required
-              type="text"
-              name="login"
-              placeholder="login"
-              value={login}
-              onChange={(e) => setLogin(e.target.value)}
-            />
-            <input
-              className="mc-button full"
-              required
-              type="password"
-              name="password"
-              placeholder="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <button className="mc-button full">SUBMIT</button>
-          <div className="text-center">
-            <DisplayErrors errors={errors} />
-          </div>
-        </form>
+    <div>
+      <ReactNotifications />
+      <div className="flex-container">
+        <div>
+          <h1 className="text-center">SIGNIN</h1>
+          <form onSubmit={handleSubmit}>
+            <div className="mc-menu">
+              <input
+                className="mc-button full"
+                required
+                type="text"
+                name="login"
+                placeholder="login"
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
+              />
+              <input
+                className="mc-button full"
+                required
+                type="password"
+                name="password"
+                placeholder="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <button className="mc-button full">SUBMIT</button>
+            <div className="text-center">
+              <DisplayErrors errors={errors} />
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

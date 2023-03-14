@@ -8,8 +8,8 @@ import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import {Route, Routes, Link, Router} from "react-router-dom";
-import SignIn from './SignIn';
-import { game } from '../pages/CoPage';
+import SignIn from './SignInPage';
+import { game } from './CoPage';
 
 const Search = () => {
   if (game !== undefined && game.socket)

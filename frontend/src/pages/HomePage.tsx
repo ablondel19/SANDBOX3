@@ -2,8 +2,15 @@ import {Link} from "react-router-dom";
 import React from "react";
 import Navb from "../components/NavBar";
 import Nav from 'react-bootstrap/Nav';
+import { game } from "./CoPage";
 
 const HomePage = () => {
+
+    if (game.socket) {
+        console.log("Home Page :)");
+        game.socket.emit('isWaiting');
+    }
+
     return (
         <div>
             <Navb/>
@@ -13,10 +20,10 @@ const HomePage = () => {
                         <Nav.Link as={Link} to="/Lobby" className="title">Play</Nav.Link>
                     </div>
                     <div className="mc-button full">
-                        <Nav.Link as={Link} to="/Settings" className="title">Settings</Nav.Link>
+                        <Nav.Link as={Link} to="/Community" className="title">Community</Nav.Link>
                     </div>
                     <div className="mc-button full">
-                        <Nav.Link as={Link} to="/Sample" className="title">Sample</Nav.Link>
+                        <Nav.Link as={Link} to="/Profile" className="title">Profile</Nav.Link>
                     </div>
                 </div>
             </div>

@@ -4,19 +4,20 @@ import ConnectionPage from "../pages/ConnectionPage";
 import LeaderboardPage from "../pages/LeaderboardPage";
 import LobbyPage from "../pages/LobbyPage";
 import GamePage from "../pages/GamePage";
-import MovePage from "../pages/All";
+import MovePage from "../pages/HomePage";
 import RoomWaiting from "../pages/RoomWaiting";
-import SpectatePage from "../pages/Spectate";
+import SpectatePage from "../pages/SpectatePage";
 import {GameWon} from "../pages/GameResult";
 import {GameLost} from "../pages/GameResult";
-import HomePage from '../pages/All';
+import HomePage from '../pages/HomePage';
 import ProfilePage from '../pages/ProfilePage';
-import SignUpPage from '../pages/SignUp';
-import SignInPage from '../pages/SignIn';
+import SignUpPage from '../pages/SignUpPage';
+import SignInPage from '../pages/SignInPage';
 import CreateLobbyPage from '../pages/CreateLobby';
 import CoPage from "../pages/CoPage";
 import SettingsPage from "../pages/SettingsPage";
 import { SpectateResult } from '../pages/GameResult';
+import CommunityPage from '../pages/Community';
 
 function Pathing(){
     return (
@@ -25,9 +26,9 @@ function Pathing(){
             <Route path='/CoPage' element={<CoPage/>}/>
             <Route path='/' element={<ConnectionPage/>}/>
             <Route path='/Lobby' element={<LobbyPage/>}/>
-            <Route path='/GameWon' element={<GameWon/>}/>
+            <Route path='/GameWon' element={<GameWon id={0} Player1={''} Player2={''} scoreX={0} scoreY={0}/>}/>
             <Route path='/HomePage' element={<HomePage/>}/>
-            <Route path='/GameLost' element={<GameLost/>}/>
+            <Route path='/GameLost' element={<GameLost id={0} Player1={''} Player2={''} scoreX={0} scoreY={0}/>}/>
             <Route path='/SignUp' element={<SignUpPage/>}/>
             <Route path='/SignIn' element={<SignInPage/>}/>
             <Route path='/Profile' element={<ProfilePage/>}/>
@@ -36,7 +37,8 @@ function Pathing(){
             <Route path='/RoomWaiting' element={<RoomWaiting/>}/>
             <Route path='/Leaderboard' element={<LeaderboardPage/>}/>
             <Route path='/CreateLobby' element={<CreateLobbyPage/>}/>
-            <Route path='/SpectateResult' element={<SpectateResult/>}/>
+            <Route path='/SpectateResult' element={<SpectateResult id={0} Player1={''} Player2={''} scoreX={0} scoreY={0}/>}/>
+            <Route path='/Community' element={<CommunityPage/>}/>
         </Routes>
     )
 }

@@ -1,18 +1,50 @@
 import { game } from "./CoPage";
 import Nav from 'react-bootstrap/Nav';
 import Navb from "../components/NavBar";
+import { ReactNotifications, Store } from 'react-notifications-component'
+import 'react-notifications-component/dist/theme.css'
+
 
 function CreateLobbyPage(){
-    
+    if (game.socket)
+    {
+        console.log("Home Page :)");
+        game.socket.emit('isWaiting');
+    }
+
     const addLobby = () => {
         game.socket.emit('CreateLobby', (response: any) => {
-            alert(response);
+            Store.addNotification({
+                title: "Lobby",
+                message: response,
+                type: "default",
+                insert: "top",
+                container: "top-right",
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                  duration: 3000,
+                  onScreen: true
+                }
+              });
         });
     }
 
     const addRainbowLobby = () => {
         game.socket.emit('CreateRainbowLobby', (response: any) =>{
-            alert(response);
+            Store.addNotification({
+                title: "Lobby",
+                message: response,
+                type: "default",
+                insert: "top",
+                container: "top-right",
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                  duration: 3000,
+                  onScreen: true
+                }
+              });
         });
     }
     const printLobby = () => {
@@ -21,21 +53,22 @@ function CreateLobbyPage(){
 
         return (
             <div>
-            <Navb/>
-            <div className="flex-container">
-                <div className="mc-menu">
-                    <div className="mc-button full">
-                        <Nav.Link onClick={addLobby} className="title">Create classic Lobby</Nav.Link>
-                    </div>
-                    <div className="mc-button full">
-                        <Nav.Link onClick={addRainbowLobby} className="title">Create Rainbow Day Lobby</Nav.Link>
-                    </div>
-                    <div className="mc-button full">
-                        <Nav.Link onClick={printLobby} className="title">Print Lobby</Nav.Link>
+                <ReactNotifications />
+                <Navb/>
+                <div className="flex-container">
+                    <div className="mc-menu">
+                        <div className="mc-button full">
+                            <Nav.Link onClick={addLobby} className="title">Create classic Lobby</Nav.Link>
+                        </div>
+                        <div className="mc-button full">
+                            <Nav.Link onClick={addRainbowLobby} className="title">Create Rainbow Day Lobby</Nav.Link>
+                        </div>
+                        <div className="mc-button full">
+                            <Nav.Link onClick={printLobby} className="title">Print Lobby</Nav.Link>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>);
+            </div>);
 }
 
 export default CreateLobbyPage;

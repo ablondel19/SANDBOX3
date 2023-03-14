@@ -75,6 +75,7 @@ class Ball
     }
 }
 
+
 export class gameInfo {
     Balling: Ball;
     Player1: Player;
@@ -152,17 +153,18 @@ export class Gaming {
         console.log(this.Info.Connected.length);
         console.log("Rendering...");
         if (this.Info.Running === true)
-
-        return;
-        if (this.Info.Connected.length === 2)
+            return 1;
+        if (this.Info.Connected.length === 2 || this.Info.Player1.score < 7 || this.Info.Player2.score < 7)
         {
             this.Info.Running = true;
             this.intID = setInterval(() => {
                 this.UpdateBall();
             }, 1000 / 60);
         }
+        if (this.Info.Player1.score >= 7 || this.Info.Player2.score >= 7)
+            return 0;
         else
-            return this.intID = -1;
+            return -1;
     }
     Disconnect(id: string) {
         const index = this.getInfo().Connected.indexOf(id);
@@ -193,13 +195,6 @@ export class Gaming {
     }
 
     public UpdateBall() {
-        if (this.Info.Connected.length < 2){
-            clearInterval(this.intID);
-            this.Info.Running = false;
-            this.Info.resetCanvas();
-            console.log("Game Stopped");
-            return;
-        }
         this.Room.to('0').emit('Ping', this.Info);
         this.Info.MoveHandler();
         this.Info.Balling.x += this.Info.Balling.velocityX;
@@ -212,6 +207,13 @@ export class Gaming {
         else if (this.Info.Balling.x + this.Info.Balling.radius > this.Info.CDimension.width) {
             this.Info.Player1.score++;
             this.ReplaceBall(0);
+            return;
+        }
+        if (this.Info.Connected.length < 2 || this.Info.Player1.score === 7 || this.Info.Player2.score === 7){
+            clearInterval(this.intID);
+            this.Info.Running = false;
+            if (this.Info.Player1.score === 7 || this.Info.Player2.score === 7)
+                this.Room.to('0').emit('EndGame', this.Info);
             return;
         }
         if (this.Info.Balling.y + this.Info.Balling.radius > this.Info.CDimension.height || this.Info.Balling.y - this.Info.Balling.radius < 0)

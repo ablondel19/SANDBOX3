@@ -17,7 +17,7 @@ class Player
     max:number;
     speed:number;
     moveUp:boolean;
-    moveDown:boolean
+    moveDown:boolean;
     constructor(x:number, y:number, width:number, height:number, color:string, score:number, min:number, max:number, speed:number) {
         this.x = x;
         this.y = y - height / 2;
@@ -71,15 +71,23 @@ export class gameInfo{
     Balling:Ball;
     Player1:Player;
     Player2:Player;
+    Connected:string[];
+    Running:boolean;
     CDimension:any = {width: 0, height: 0};
+    Lead: [string, Player];
+    Loser: [string, Player];
     constructor(widths:number, heights:number){
+        this.Running = false;
+        this.Connected = [];
         this.Balling = new Ball((widths / 2), (heights / 2), 10, 10, 5, 0, 'red');
         this.Player1 = new Player(0, 500, 20, 100, '#0d35ca', 0, 0, heights, 10);
         this.Player2 = new Player(widths - 20, (heights / 2), 20, 100, '#05f315', 0, 0, heights, 10);
         this.CDimension = {width: widths, height: heights};
     }
     resetCanvas()
-    {     
+    {    
+        this.Running = false;
+        this.Connected = [];
         this.Balling = new Ball((this.CDimension.width / 2), (this.CDimension.height / 2), 10, 10, 5, 10, 'red');
         this.Player1 = new Player(0, 500, 20, 100, '#0d35ca', 0, 0, this.CDimension.height, 10);
         this.Player2 = new Player(this.CDimension.width - 20, (this.CDimension.height / 2), 20, 100, '#05f315', 0, 0, this.CDimension.height, 10);
