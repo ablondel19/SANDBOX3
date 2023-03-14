@@ -7,21 +7,6 @@ import { useEffect, useState } from "react";
 import {GameWon} from "./GameResult";
 import {GameLost} from "./GameResult";
 
-const onProut = () => {
-    console.log("prout");
-}
-
-function Fack(){
-    console.log("fack");
-    return (
-        <div>
-            <Nav/>
-            <h1> fack </h1>
-            <button onClick={onProut}>IM FUCKING READY</button>
-        </div>
-    )
-}
-
 function GamePage() {
 
     const [Won, setWon] = useState<boolean>(false);
@@ -55,9 +40,9 @@ function GamePage() {
             setLost(false);
             setInfo(info);
             setWon(true);
+
         });
         game.socket.on('EndGame', () => {
-            console.log("ihihihihihi");
             game.socket.emit('EndGame');
         });
 
@@ -66,8 +51,6 @@ function GamePage() {
             game.socket.off('GameLost');
         }
     }, [Won, Lost, Info]);
-
-    console.log(Won, Lost, Info);
 
     return (
         <div>

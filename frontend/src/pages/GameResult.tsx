@@ -20,7 +20,7 @@ function GameLost(props:MatchResultDto) {
     const Navigate = useNavigate();
     return (
         <div>
-            <h1>You Lost vs {props.Player2} : {props.scoreX} - {props.scoreY} </h1>
+            <h1>You Lost vs {props.Player1} : {props.scoreY} - {props.scoreX} </h1>
             <button onClick={() => Navigate('/HomePage')}>Back to Main Menu</button>
         </div>
     );
@@ -36,14 +36,12 @@ function GameDraw() {
     );
 }
 
-function SpectateResult() {
-    
-    const location = useLocation();
+function SpectateResult(props:MatchResultDto) {
     const Navigate = useNavigate();
-    const WinnerName = location.state.info;
     return (
         <div>
-            <h1> {WinnerName} is the Winner !!!!! </h1>
+            <h1> {props.Player1} is the Winner !!! </h1>
+            <h1> He Won {props.scoreX} - {props.scoreY} vs {props.Player2} </h1>
             <button onClick={() => Navigate('/HomePage')}>Back to Main Menu</button>
         </div>
     );

@@ -27,6 +27,7 @@ import { JwtStrategy } from "../authentication/jwt.strategy";
 import { ConfigService } from "@nestjs/config";
 import {DISCONNECT_EVENT} from "@nestjs/websockets/constants";
 import * as jwt from 'jsonwebtoken';
+import { createNoSubstitutionTemplateLiteral } from 'typescript';
 
 @WebSocketGateway(3002, { cors: { origin: true, credentials: true } })
 export class GameGateway {
@@ -164,6 +165,18 @@ export class GameGateway {
         console.log(client.handshake.headers.authorization)
         console.log(`${client.data.username}' - asking for lobby info`);
         this.LobbyManager.printLobby();
+    }
+
+
+    @SubscribeMessage('isWaiting')
+        handlePlayerInfo(
+            @MessageBody() data: string,
+            @ConnectedSocket() client: Socket,
+        ): any {
+            if (!client || client === undefined)
+                return ;
+            if (this.LobbyManager.isWaiting(client.data.username))
+                this.LobbyManager.LeaveWaitingRoom(client.data.username, client);
     }
 
     @SubscribeMessage('PaddleUp')

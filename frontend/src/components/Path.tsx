@@ -37,7 +37,7 @@ function Pathing(){
             <Route path='/RoomWaiting' element={<RoomWaiting/>}/>
             <Route path='/Leaderboard' element={<LeaderboardPage/>}/>
             <Route path='/CreateLobby' element={<CreateLobbyPage/>}/>
-            <Route path='/SpectateResult' element={<SpectateResult/>}/>
+            <Route path='/SpectateResult' element={<SpectateResult id={0} Player1={''} Player2={''} scoreX={0} scoreY={0}/>}/>
             <Route path='/Community' element={<CommunityPage/>}/>
         </Routes>
     )

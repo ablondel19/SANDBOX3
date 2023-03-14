@@ -1,12 +1,9 @@
 
 // need chat here too !!!
-import NyanCat from '../assets/NyanCat.gif'
-import Nav from 'react-bootstrap/Nav';
-import {Link} from "react-router-dom";
-import { FaPlay } from 'react-icons/fa';
 import PewPew from '../assets/Pewpew.mp3';
 import DiscordSound from '../assets/Discord.mp3';
 import RohSound from '../assets/Rooooh.mp3';
+import Nav from "../components/NavBar";
 
 function Pew() {
     const audio = new Audio(PewPew);
@@ -31,6 +28,7 @@ function RoomWaiting () {
 
     return (
     <div>
+        <Nav/>
         <div className='text-center'>
             <h1> Waiting : You will be redirect when a player will be found, until that, you can chat :)</h1>
         </div>

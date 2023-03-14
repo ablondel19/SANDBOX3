@@ -27,6 +27,14 @@ function connected (){
 }
 
 function CoPage(){
+
+    if (game.socket)
+    {
+        game.socket.emit('Disconnect');
+        game.socket.disconnect();
+        game.socket = null;
+    }
+    
     game.socketInit();
     const navigate = useNavigate();
 

@@ -2,8 +2,15 @@ import {Link} from "react-router-dom";
 import React from "react";
 import Navb from "../components/NavBar";
 import Nav from 'react-bootstrap/Nav';
+import { game } from "./CoPage";
 
 const HomePage = () => {
+
+    if (game.socket)
+    {
+        console.log("Home Page :)");
+        game.socket.emit('isWaiting');
+    }
     return (
         <div>
             <Navb/>
