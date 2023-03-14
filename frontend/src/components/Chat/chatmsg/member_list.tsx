@@ -10,13 +10,19 @@ import { ImBlocked } from 'react-icons/im';
 import { IoMdClose, IoMdExit } from 'react-icons/io';
 import { BiBlock } from 'react-icons/bi';
 import { RiVipCrownFill } from 'react-icons/ri';
+
+import { MdGrade } from 'react-icons/md';
+
 import Popup from 'reactjs-popup';
 import { MUTE, UPDATE_CHAT, KICK, ADMIN, ADDTOCHAT, GET_USERS } from '../query/query';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 
 
-export const MemberList = ({ data, login }: any) => {
+export const MemberList = ({...props}) => {
+    const { data, login} = props;
     const [usersInfo, setUsersInfo] = useState([]);
+    
 
     useQuery(GET_USERS, {
         onCompleted: async (data) => {
@@ -58,6 +64,7 @@ export const MemberList = ({ data, login }: any) => {
         },
     });
 
+
     return (
         <>
             <ScrollArea style={{ height: 450 }} scrollbarSize={8}>
@@ -73,15 +80,11 @@ export const MemberList = ({ data, login }: any) => {
                                                 <Text>{userInfo.login}</Text>
                                                 {
                                                     userInfo.login === data.ownerID &&
-                                                    <RiVipCrownFill color='orange'></RiVipCrownFill>
-
-                                                    
+                                                        <RiVipCrownFill color='orange'></RiVipCrownFill>
                                                 }
                                                 {
                                                     data.adminID.includes(userInfo.login) &&
-                                                    <RiVipCrownFill color='orange'></RiVipCrownFill>
-
-                                                    
+                                                        <MdGrade color='blue'></MdGrade>
                                                 }
                                             </Group>
                                         </Popover.Target>
@@ -92,24 +95,83 @@ export const MemberList = ({ data, login }: any) => {
                                                             <div>
                                                                 <Group>
                                                                     <ActionIcon
-                                                                        onClick={() => promote({
-                                                                            variables: {
-                                                                                uuid: data.uuid,
-                                                                                userID: userInfo.login,
+                                                                        onClick={() => {
+                                                                            if(data.adminID.includes(userInfo.login)) {
+                                                                                toast.error('User is already admin!', {
+                                                                                    position: "top-center",
+                                                                                    autoClose: 5000,
+                                                                                    hideProgressBar: false,
+                                                                                    closeOnClick: true,
+                                                                                    pauseOnHover: true,
+                                                                                    draggable: true,
+                                                                                    progress: undefined,
+                                                                                    theme: "colored",
+                                                                                    });
+                                                                                return;
                                                                             }
-                                                                        })}
+                                                                            promote({
+                                                                                variables: {
+                                                                                    uuid: data.uuid,
+                                                                                    userID: userInfo.login,
+                                                                                }
+                                                                            }).then(() => {
+                                                                                toast.success('User has been promoted', {
+                                                                                    position: "top-center",
+                                                                                    autoClose: 5000,
+                                                                                    hideProgressBar: false,
+                                                                                    closeOnClick: true,
+                                                                                    pauseOnHover: true,
+                                                                                    draggable: true,
+                                                                                    progress: undefined,
+                                                                                    theme: "colored",
+                                                                                });
+                                                                            })
+                                                                    }
+
+                                                                            
+                                                                    
+                                                                    }
                                                                     ><GrUpgrade size={20} color="blue"></GrUpgrade></ActionIcon>
                                                                     <Text>Promote</Text>
                                                                 </Group>
                                                                 <Group>
 
                                                                 <ActionIcon
-                                                                    onClick={() => mute({
+                                                                
+                                                                    onClick={() => {
+                                                                        // if(data.muteID.includes(userInfo.login)) {
+                                                                        //     toast.error('User is already admin!', {
+                                                                        //         position: "top-center",
+                                                                        //         autoClose: 5000,
+                                                                        //         hideProgressBar: false,
+                                                                        //         closeOnClick: true,
+                                                                        //         pauseOnHover: true,
+                                                                        //         draggable: true,
+                                                                        //         progress: undefined,
+                                                                        //         theme: "colored",
+                                                                        //         });
+                                                                        //     return;
+                                                                        // }
+                                                                        
+                                                                        mute({
                                                                         variables: {
                                                                             uuid: data.uuid,
                                                                             userID: userInfo.login,
                                                                         }
-                                                                    })}
+                                                                    }).then(() => {
+                                                                        toast.success('User has been muted', {
+                                                                            position: "top-center",
+                                                                            autoClose: 5000,
+                                                                            hideProgressBar: false,
+                                                                            closeOnClick: true,
+                                                                            pauseOnHover: true,
+                                                                            draggable: true,
+                                                                            progress: undefined,
+                                                                            theme: "colored",
+                                                                        });  
+                                                                    })
+                                                                    }
+                                                                }
                                                                 ><BiBlock size={20} color="red"></BiBlock></ActionIcon>
                                                                     <Text>Block</Text>
                                                                 </Group>
@@ -125,6 +187,19 @@ export const MemberList = ({ data, login }: any) => {
                     })
                 }
             </ScrollArea>
+            
+            <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
         </>
     )
 }

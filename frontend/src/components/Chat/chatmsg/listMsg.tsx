@@ -9,6 +9,7 @@ import { GET_MESSAGES, MESSAGE_ADDED_SUBSCRIPTION } from "../query/query";
 import { IoIosArrowBack } from "react-icons/io";
 import { FaUserFriends } from "react-icons/fa"
 import { MemberList } from "./member_list";
+import axios from "axios";
 
 const ListMsg = ({ data, setShowMessages, login, avatar }: any) => {
     const [showMembers, setShowMembers] = useState(false);
@@ -59,6 +60,11 @@ const ListMsg = ({ data, setShowMessages, login, avatar }: any) => {
         }
     }, [listmsg]);
 
+    async function getAvatar(login) {
+        const resp = await axios.get(`http://localhost:3001/app/users/avatar/${login}`);
+        return resp.data.avatar;
+    }
+
     return (
         <>
             <div className="">
@@ -105,7 +111,9 @@ const ListMsg = ({ data, setShowMessages, login, avatar }: any) => {
                                                                             <div className="text">
                                                                                 <p>{elem.message}</p>
                                                                             </div>
-                                                                            <Avatar size={40} color="blue" src={`data:image/jpeg;base64,${avatar}`}></Avatar>
+                                                                            {
+                                                                                <Avatar size={40} color="blue" src={`data:image/jpeg;base64,${getAvatar(elem.userID)}`}></Avatar>
+                                                                            }
 
                                                                         </>
 

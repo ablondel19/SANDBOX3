@@ -24,6 +24,7 @@ export const ListChat = ({ toggleShowCreate, chat_list, login, avatar }: any) =>
         type: '',
         ownerID: '',
         userID: [],
+        adminID: [],
 
     });
 
@@ -104,7 +105,7 @@ export const ListChat = ({ toggleShowCreate, chat_list, login, avatar }: any) =>
                             <Divider my="sm" />
 
                             {
-                                chat_list.data && chat_list.data.aliveChats.map((elem: { name: string, ownerID: string, uuid: string, type: string, userID: [] }) => {
+                                chat_list.data && chat_list.data.aliveChats.map((elem: { name: string, ownerID: string, uuid: string, type: string, userID: [], adminID: [] }) => {
                                     return (
                                         elem.type === "public" &&
                                         <div style={{ padding: "5px" }}>
@@ -112,7 +113,7 @@ export const ListChat = ({ toggleShowCreate, chat_list, login, avatar }: any) =>
                                             <Group>
                                                 <UnstyledButton
                                                     onClick={() => {
-                                                        setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID });
+                                                        setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID, adminID: elem.adminID });
                                                         toggleShowMessages();
                                                     }}
                                                 >
@@ -130,7 +131,7 @@ export const ListChat = ({ toggleShowCreate, chat_list, login, avatar }: any) =>
                                                         ><AiOutlineDelete size={20} color="red"></AiOutlineDelete></ActionIcon>
                                                         <ActionIcon
                                                             onClick={() => {
-                                                                setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID });
+                                                                setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID, adminID: elem.adminID });
                                                                 toggleShowEdit();
                                                             }
                                                             }
@@ -147,7 +148,7 @@ export const ListChat = ({ toggleShowCreate, chat_list, login, avatar }: any) =>
                             <Divider my="sm" />
 
                             {
-                                chat_list.data && chat_list.data.aliveChats.map((elem: { name: string, ownerID: string, uuid: string, type: string, userID: [] }) => {
+                                chat_list.data && chat_list.data.aliveChats.map((elem: { name: string, ownerID: string, uuid: string, type: string, userID: [], adminID: []}) => {
                                     return (
                                         elem.type === "private" &&
                                         <div style={{ padding: "5px" }}>
@@ -155,7 +156,7 @@ export const ListChat = ({ toggleShowCreate, chat_list, login, avatar }: any) =>
                                             <Group className='chat-group'>
                                                 <UnstyledButton
                                                     onClick={() => {
-                                                        setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID });
+                                                        setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID, adminID: elem.adminID });
                                                         toggleShowPassword()
                                                     }}
                                                 >
@@ -172,7 +173,7 @@ export const ListChat = ({ toggleShowCreate, chat_list, login, avatar }: any) =>
                                                         ><AiOutlineDelete size={20} color="red"></AiOutlineDelete></ActionIcon>
                                                         <ActionIcon
                                                             onClick={() => {
-                                                                setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID });
+                                                                setDataChat({ uuid: elem.uuid, name: elem.name, type: elem.type, userID: elem.userID, ownerID: elem.ownerID, adminID: elem.adminID });
                                                                 setShowEdit(true);
                                                             }}
                                                         ><AiOutlineSetting size={20}></AiOutlineSetting></ActionIcon>

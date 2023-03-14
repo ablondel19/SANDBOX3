@@ -8,6 +8,7 @@ query GetChats($userID: String, $type: String) {
     type
     ownerID
     userID
+    adminID
   }
 }
 `;
