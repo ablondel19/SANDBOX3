@@ -25,7 +25,7 @@ function classNames(...classes) {
 }
 
 function ColorSchemesExample() {
-  const [avatar, setAvatar] = useState<string>();
+  const [avatar, setAvatar] = useState<string>("");
   const [errors, setErrors] = useState();
 
   useEffect(() => {
@@ -54,18 +54,6 @@ function ColorSchemesExample() {
 
   return (
     <>
-
-      {/* <Navbar bg="primary" variant="dark">
-        <Container fluid>
-          <Navbar.Brand as={Link} to ="/HomePage">Ping Pong :)</Navbar.Brand>
-          <Nav>
-              <Nav.Link as={Link} to="/Lobby"><GiRadarSweep/></Nav.Link>
-              <Nav.Link as={Link} to="/leaderboard"><GiPodium/></Nav.Link>
-              <Nav.Link as={Link} to="/Profile"><FaUserAlt/></Nav.Link>
-              <Nav.Link as={Link} to="/"><FaRunning/></Nav.Link>
-          </Nav>
-        </Container>
-      </Navbar> */}
       <Disclosure as="nav" className="bg-gray-800">
         {({ open }) => (
           <>
@@ -73,18 +61,10 @@ function ColorSchemesExample() {
               <div className="relative flex h-16 items-center justify-between">
                 <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                   {/* Mobile menu button*/}
-                  <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                    <span className="sr-only">Open main menu</span>
-                    {open ? (
-                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                    ) : (
-                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                    )}
-                  </Disclosure.Button>
                 </div>
                 <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                   <div className="flex flex-shrink-0 items-center">
-                    <a>
+                    <div>
                       <Nav.Link as={Link} to="/HomePage" className="title">
                       <img
                         className="block h-8 w-auto lg:hidden logo"
@@ -97,15 +77,17 @@ function ColorSchemesExample() {
                         alt="Pong"
                       />
                       </Nav.Link>
-                    </a>
-                  </div>
-                  <div className="hidden sm:ml-6 sm:block">
-                    <div className="flex space-x-4">
-                      {navigation.map((item) => (
-                        <Nav.Link as={Link} to={item.href} className={classNames(item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium')} aria-current={item.current ? 'page' : undefined}>{item.name}</Nav.Link>
-                      ))}
                     </div>
                   </div>
+
+                  <div className="hidden sm:ml-6 sm:block">
+                    <div className="flex space-x-4">
+                        <Nav.Link as={Link} to="/Game" className="text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium">Sample</Nav.Link>
+                        <Nav.Link as={Link} to="/Lobby" className="text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium">Lobby</Nav.Link>
+                        <Nav.Link as={Link} to="/Leaderboard" className="text-gray-300 hover:bg-gray-700 hover:text-white', 'px-3 py-2 rounded-md text-sm font-medium">Leaderboard</Nav.Link>
+                    </div>
+                  </div>
+
                 </div>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                   <button
@@ -140,32 +122,17 @@ function ColorSchemesExample() {
                       <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <Menu.Item>
                           {({ active }) => (
-                            <a
-                              href="/Profile"
-                              className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                            >
-                              Your Profile
-                            </a>
+                              <Nav.Link as={Link} to="/Profile" className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>Profile</Nav.Link>
                           )}
                         </Menu.Item>
                         <Menu.Item>
                           {({ active }) => (
-                            <a
-                              href="/"
-                              className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                            >
-                              Settings
-                            </a>
+                              <Nav.Link as={Link} to="/Settings" className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}>Settings</Nav.Link>
                           )}
                         </Menu.Item>
                         <Menu.Item>
                           {({ active }) => (
-                            <a
-                              href="/"
-                              className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-red-700')}
-                            >
-                              Sign out
-                            </a>
+                            <Nav.Link as={Link} to="/" className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-red-700')}>Sign out</Nav.Link>
                           )}
                         </Menu.Item>
                       </Menu.Items>

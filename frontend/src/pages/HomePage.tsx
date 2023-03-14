@@ -7,7 +7,6 @@ import { game } from "./CoPage";
 const HomePage = () => {
 
     if (game.socket) {
-        console.log("Home Page :)");
         game.socket.emit('isWaiting');
     }
 

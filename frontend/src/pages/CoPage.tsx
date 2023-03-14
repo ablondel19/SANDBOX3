@@ -4,8 +4,6 @@ import { Gaming } from '../components/Canvas';
 import HomePage from './HomePage';
 import { ReactNotifications, Store } from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
-import { TIMEOUT } from 'dns';
-import { time } from 'console';
 
 export var game = new Gaming(1000, 1000);
 
